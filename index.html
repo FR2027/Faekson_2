@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Faekson Search (系統維護中)</title>
+  <title>Faekson Search</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
@@ -107,7 +107,7 @@
       <!-- 原版風格的當機公告 -->
       <div class="mt-2 px-4 py-2 rounded-2xl bg-red-500/10 border border-red-500/20 text-center max-w-md">
         <p class="text-xs text-red-500 dark:text-red-400 font-bold flex items-center justify-center gap-1.5">
-          <i class="fa-solid fa-triangle-exclamation"></i> 警告：搜尋引擎主資料庫已崩潰，目前無法正常檢索
+          <i class="fa-solid fa-triangle-exclamation"></i> 重要公告：搜尋引擎於2026.7/28 00:17嚴重當機
         </p>
       </div>
     </div>
@@ -123,7 +123,7 @@
             id="search-input"
             oninput="handleTyping()"
             onfocus="handleTyping()"
-            placeholder="搜尋網頁名稱或關鍵字（目前系統當機中）..." 
+            placeholder="搜尋網頁名稱或關鍵字..." 
             autocomplete="off"
             class="w-full bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 text-base px-2 py-1"
           />
@@ -164,7 +164,7 @@
   </main>
 
   <footer class="mt-auto border-t border-black/10 dark:border-white/10 py-6 text-center text-xs text-slate-400 dark:text-slate-500 glass-effect">
-    <p>© 2027 FR科技公司開發 Faekson搜尋引擎 <span class="text-red-500 font-semibold">[ 系統發生重大故障 ]</span></p>
+    <p>© 2027 FR科技公司開發 Faekson搜尋引擎 <span class="text-red-500 font-semibold"> 系統故障 </span></p>
   </footer>
 
   <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-medium transition-all duration-300 pointer-events-none z-50 border border-white/10">
@@ -186,7 +186,7 @@
       } catch (err) {
         console.error('數據載入失敗 (模擬大當機):', err);
         const stats = document.getElementById('search-stats');
-        if (stats) stats.innerText = '⚠️ 嚴重錯誤：無法連線至 GitHub 伺服器節點 (Connection Timeout)';
+        if (stats) stats.innerText = '嚴重錯誤：無法連線 (Connection Timeout)';
         
         // 載入失敗時提供空的資料或預設當機提示清單
         allData = [];
@@ -198,7 +198,7 @@
       const stats = document.getElementById('search-stats');
 
       if (stats) {
-        stats.innerText = `⚠️ 伺服器當機中：無法完成查詢 (耗時 ${searchTime} 毫秒)`;
+        stats.innerText = `伺服器當機中：無法完成查詢 (耗時 ${searchTime} 毫秒)`;
       }
 
       // 直接顯示大當機的畫面
