@@ -148,7 +148,7 @@
   { "id": 147, "title": "Archive.org 網際網路時光機", "url": "https://archive.org", "snippet": "保存全球網頁歷史快照、免費電子書、舊遊戲與數位檔案的數位圖書館。", "tags": ["archive", "網頁快照", "歷史", "圖書館"] },
   { "id": 148, "title": "Speedtest 網路測速服務", "url": "https://www.speedtest.net", "snippet": "全球最普及的網路下載、上傳速度與 Ping 延遲測試工具。", "tags": ["speedtest", "測速", "網速", "ping"] },
   { "id": 149, "title": "Ipify 免費 IP 查詢 API", "url": "https://www.ipify.org", "snippet": "簡單極速獲取使用者公網 IP 地址的開源 API 服務。", "tags": ["ipify", "ip查詢", "api", "開發者"] },
-  { "id": 150, "title": "Faekson 專屬極簡搜尋引擎", "url": "https://fr2027.github.io/Faekson/", "snippet": "由 FR 科技公司開發，基於 GitHub JSON 的個人化知識庫與高顏值搜尋平台。", "tags": ["faekson", "fr", "搜尋引擎", "首頁"] }
+  { "id": 150, "title": "Faekson 專屬極簡搜尋引擎", "url": "https://fr2027.github.io/Faekson/", "snippet": "由 FR 科技公司開發，基於 GitHub JSON 的個人化知識庫與高顏值搜尋平台。", "tags": ["faekson", "fr", "搜尋引擎", "首頁"] },
   { "id": 151, "title": "自由時報即時新聞", "url": "https://news.ltn.com.tw", "snippet": "提供最即時、多元的國內外新聞、政治、財經與生活焦點報導。", "tags": ["即時新聞", "新聞", "台灣"], "image": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600" },
   { "id": 152, "title": "聯合新聞網 UDN", "url": "https://udn.com", "snippet": "國內外即時新聞、數位視野與深度觀點綜合新聞平台。", "tags": ["即時新聞", "新聞", "財經"], "image": "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=600" },
   { "id": 153, "title": "ETtoday新聞雲", "url": "https://www.ettoday.net", "snippet": "即時新聞、娛樂星光、生活情報與社群熱門討論話題。", "tags": ["即時新聞", "新聞", "娛樂"], "image": "https://images.unsplash.com/photo-1495020689067-958852a7765e?w=600" },
