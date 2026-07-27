@@ -140,7 +140,7 @@
   </main>
 
   <footer class="mt-auto border-t border-black/10 dark:border-white/10 py-6 text-center text-xs text-slate-400 dark:text-white/40">
-    <p>© 2027 FR Technology & Faekson Search. All rights reserved.</p>
+    <p>© 2027 FR科技公司 Faekson搜尋引擎 著作權所有 禁止盜版</p>
   </footer>
 
   <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-sm font-medium transition-all duration-300 pointer-events-none z-50">
@@ -157,7 +157,7 @@
     async function init() {
       updateBookmarkBadge();
       try {
-        // 已更新為你的 Faekson_2 專案連結，並加上時間戳記防快取[span_1](start_span)[span_1](end_span)
+        // 67
         const fetchUrl = 'https://raw.githubusercontent.com/FR2027/Faekson_2/refs/heads/main/data.json?v=' + new Date().getTime();
         const res = await fetch(fetchUrl);
         if (!res.ok) throw new Error('HTTP 錯誤: ' + res.status);
