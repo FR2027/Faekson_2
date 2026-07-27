@@ -250,7 +250,7 @@
   { "id": 236, "title": "FR TestFlight Beta", "url": "https://fr-tech.example.com/beta", "snippet": "FR 內部 App 測試測試發布平台，即時領取 Beta 版應用體驗。", "tags": ["FR", "FR 專區", "App"], "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600" },
   { "id": 237, "title": "FR Design System", "url": "https://fr-tech.example.com/design", "snippet": "FR 設計規範與前端元件庫，確保多產品UI樣式一致。", "tags": ["FR", "FR 專區", "UI"], "image": "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600" },
   { "id": 238, "title": "FR SSO Single Sign-On", "url": "https://fr-tech.example.com/sso", "snippet": "FR 統一單一簽入驗證主機，維護內部身份安全性與訪問權限。", "tags": ["FR", "FR 專區", "安全"], "image": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600" },
-  { "id": 239, "title": "FR GlobalCDN", "url": "https://fr-tech.example.com/cdn", "snippet": "FR 節點動態加速快取服務管理面板。", "tags": ["FR", "FR 专區", "網路"], "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" },
+  { "id": 239, "title": "FR GlobalCDN", "url": "https://fr-tech.example.com/cdn", "snippet": "FR 節點動態加速快取服務管理面板。", "tags": ["FR", "FR 專區", "網路"], "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" },
   { "id": 240, "title": "FR Issue Tracker", "url": "https://fr-tech.example.com/issues", "snippet": "專案工單追蹤系統，有效指派問題並控管專案里程碑。", "tags": ["FR", "FR 專區", "管理"], "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600" },
 
   { "id": 241, "title": "Gemini 1.5 Pro", "url": "https://gemini.google.com", "snippet": "Google 強大的多模態 AI 語言模型，支援高達兩百萬 Token 長文分析。", "tags": ["ai", "AI 工具", "Google"], "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600" },
