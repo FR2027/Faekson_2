@@ -184,7 +184,7 @@
         // 刻意製造載入失敗或模擬當機攔截
         throw new Error('503 Service Unavailable');
       } catch (err) {
-        console.error('數據載入失敗 (模擬大當機):', err);
+        console.error('數據載入失敗:', err);
         const stats = document.getElementById('search-stats');
         if (stats) stats.innerText = '嚴重錯誤：無法連線 (Connection Timeout)';
         
@@ -198,7 +198,7 @@
       const stats = document.getElementById('search-stats');
 
       if (stats) {
-        stats.innerText = `伺服器當機中：無法完成查詢 (耗時 ${searchTime} 毫秒)`;
+        stats.innerText = `無法完成查詢 (耗時 ${searchTime} 毫秒)`;
       }
 
       // 直接顯示大當機的畫面
@@ -289,7 +289,7 @@
       document.getElementById('suggestions-box').classList.add('hidden');
       currentCategory = 'all';
       isShowingBookmarks = false;
-      document.getElementById('current-mode-label').innerText = '搜尋結果 (離線狀態)';
+      document.getElementById('current-mode-label').innerText = '搜尋結果';
 
       document.querySelectorAll('.cat-btn').forEach(btn => {
         btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'border-transparent');
