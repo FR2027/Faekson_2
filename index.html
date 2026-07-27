@@ -157,8 +157,8 @@
     async function init() {
       updateBookmarkBadge();
       try {
-        // 加入時間戳記避免 API 快取問題
-        const fetchUrl = 'https://raw.githubusercontent.com/FR2027/Faekson/refs/heads/main/data.json?v=' + new Date().getTime();
+        // 已更新為你的 Faekson_2 專案連結，並加上時間戳記防快取[span_1](start_span)[span_1](end_span)
+        const fetchUrl = 'https://raw.githubusercontent.com/FR2027/Faekson_2/refs/heads/main/data.json?v=' + new Date().getTime();
         const res = await fetch(fetchUrl);
         if (!res.ok) throw new Error('HTTP 錯誤: ' + res.status);
         allData = await res.json();
@@ -435,10 +435,10 @@
       } else {
         if (label) label.innerText = '搜尋結果';
         executeSearch();
-      }
+         }
     }
 
-        function copyUrl(url) {
+    function copyUrl(url) {
       if (!url) return;
       navigator.clipboard.writeText(url).then(() => {
         showToast('網址已複製到剪貼簿！');
