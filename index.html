@@ -82,7 +82,7 @@
       <div class="flex items-center gap-3">
         <!-- 當機狀態提示標籤 -->
         <div class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-red-500/10 border border-red-500/20 text-red-500 animate-pulse">
-          <i class="fa-solid fa-triangle-exclamation"></i> 伺服器核心大當機 (503 Error)
+          <i class="fa-solid fa-triangle-exclamation"></i> 伺服器核心當機 (503 Error)
         </div>
 
         <button onclick="toggleBookmarksView()" id="bookmark-toggle-btn" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10 transition shadow-sm">
@@ -154,7 +154,7 @@
     <div id="results-wrapper" class="hidden flex-col gap-4 mt-2">
       <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-2">
         <span id="search-stats" class="font-medium text-red-500">連線逾時：無法取得遠端資料庫</span>
-        <span id="current-mode-label" class="font-semibold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg">搜尋結果 (離線狀態)</span>
+        <span id="current-mode-label" class="font-semibold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg">搜尋結果</span>
       </div>
 
       <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -164,7 +164,7 @@
   </main>
 
   <footer class="mt-auto border-t border-black/10 dark:border-white/10 py-6 text-center text-xs text-slate-400 dark:text-slate-500 glass-effect">
-    <p>© 2027 FR科技公司開發 Faekson搜尋引擎 <span class="text-red-500 font-semibold"> 系統故障 </span></p>
+    <p>© 2027 FR科技公司開發 Faekson搜尋引擎 <span class="text-red-500 font-semibold"></span></p>
   </footer>
 
   <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-medium transition-all duration-300 pointer-events-none z-50 border border-white/10">
