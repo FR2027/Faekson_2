@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faekson Search</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* 高質感漸層背景 */
+    html.dark body {
+      background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 50%, #030712 100%);
+      color: #f8fafc;
+      background-attachment: fixed;
+    }
+    html:not(.dark) body {
+      background: radial-gradient(circle at 50% 0%, #e0e7ff 0%, #f8fafc 50%, #f1f5f9 100%);
+      color: #0f172a;
+      background-attachment: fixed;
+    }
+
+    /* 精緻毛玻璃效果 */
+    .glass-effect {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    html:not(.dark) .glass-effect {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    /* 卡片懸停流光與浮動感 */
+    .result-card {
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .result-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px -10px rgba(59, 130, 246, 0.2);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+    html:not(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.15);
+    }
+  </style>
+</head>
+<body class="flex flex-col font-sans transition-colors duration-300 min-h-screen" onclick="hideSuggestions(event)">
+
+  <header id="app-header" class="sticky top-0 z-50 glass-effect border-b border-black/10 dark:border-white/10 transition-all duration-300 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <button onclick="resetToHome()" class="flex items-center gap-2 group text-left focus:outline-none">
+        <img src="https://i.ibb.co/sJRpyNmz/Background-Eraser-20260727-192939994.png" alt="Faekson Logo" class="h-8 w-auto object-contain dark:invert-0 invert transition transform group-hover:scale-105" />
+      </button>
+
+      <div class="flex items-center gap-3">
+        <button onclick="toggleBookmarksView()" id="bookmark-toggle-btn" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10 transition shadow-sm">
+          <i class="fa-solid fa-bookmark text-amber-500 dark:text-amber-400"></i>
+          <span class="hidden sm:inline">我的收藏</span>
+          <span id="bookmark-count-badge" class="bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full font-bold shadow">0</span>
+        </button>
+
+        <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10 text-slate-700 dark:text-slate-200 transition shadow-sm">
+          <i id="theme-icon" class="fa-solid fa-moon text-base"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-12 flex flex-col gap-8 justify-center transition-all duration-300" id="main-layout">
+
+    <div id="home-hero-zone" class="flex flex-col items-center justify-center py-8 transition-all duration-300">
+      <div class="cursor-pointer mb-4 transform hover:scale-105 transition duration-500" onclick="resetToHome()">
+        <img src="https://i.ibb.co/sJRpyNmz/Background-Eraser-20260727-192939994.png" alt="Faekson Logo" class="w-64 sm:w-80 h-auto object-contain dark:invert-0 invert drop-shadow-[0_10px_20px_rgba(59,130,246,0.15)]" />
+      </div>
+      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium tracking-wide">快速尋找你要的網站</p>
+    </div>
+
+    <div class="flex flex-col gap-6 relative">
+      <form onsubmit="submitSearch(event)" class="relative group">
+        <div class="w-full bg-white/80 dark:bg-[#1e1b4b]/60 backdrop-blur-xl border border-black/10 dark:border-white/20 rounded-2xl p-2 flex items-center shadow-2xl dark:shadow-[0_0_40px_-10px_rgba(59,130,246,0.25)] focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-300">
+          <div class="pl-4 pr-3 text-slate-400 dark:text-blue-400">
+            <i class="fa-solid fa-magnifying-glass text-lg"></i>
+          </div>
+          <input 
+            type="text" 
+            id="search-input"
+            oninput="handleTyping()"
+            onfocus="handleTyping()"
+            placeholder="搜尋網頁名稱或關鍵字..." 
+            autocomplete="off"
+            class="w-full bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 text-base px-2 py-1"
+          />
+          <button type="button" id="clear-btn" onclick="clearSearch()" class="hidden pr-3 text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white transition">
+            <i class="fa-solid fa-circle-xmark text-lg"></i>
+          </button>
+          <button type="submit" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium px-6 py-3 rounded-xl hover:brightness-110 shadow-lg shadow-blue-600/30 shrink-0 transition">
+            搜尋
+          </button>
+        </div>
+
+        <div id="suggestions-box" class="hidden absolute left-0 right-0 top-full mt-3 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-2xl border border-black/10 dark:border-white/15 rounded-2xl shadow-2xl overflow-hidden z-50 py-2">
+          <div class="px-4 py-2 text-[11px] font-bold text-slate-400 dark:text-slate-400 tracking-wider uppercase">熱門搜尋提示</div>
+          <div id="suggestions-list" class="flex flex-col"></div>
+        </div>
+      </form>
+
+      <div class="flex items-center gap-2.5 overflow-x-auto pb-2 custom-scrollbar text-sm justify-start sm:justify-center" id="category-bar">
+        <button onclick="filterCategory('即時新聞', event)" class="cat-btn px-4 py-2 rounded-xl font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 whitespace-nowrap transition shadow-sm border border-black/5 dark:border-white/5">即時新聞</button>
+        <button onclick="filterCategory('FR', event)" class="cat-btn px-4 py-2 rounded-xl font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 whitespace-nowrap transition shadow-sm border border-black/5 dark:border-white/5">FR 專區</button>
+        <button onclick="filterCategory('ai', event)" class="cat-btn px-4 py-2 rounded-xl font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 whitespace-nowrap transition shadow-sm border border-black/5 dark:border-white/5">AI 工具</button>
+        <button onclick="filterCategory('程式', event)" class="cat-btn px-4 py-2 rounded-xl font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 whitespace-nowrap transition shadow-sm border border-black/5 dark:border-white/5">開發設計</button>
+        <button onclick="filterCategory('遊戲', event)" class="cat-btn px-4 py-2 rounded-xl font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 whitespace-nowrap transition shadow-sm border border-black/5 dark:border-white/5">娛樂遊戲</button>
+        <button onclick="filterCategory('免費', event)" class="cat-btn px-4 py-2 rounded-xl font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 whitespace-nowrap transition shadow-sm border border-black/5 dark:border-white/5">免費資源</button>
+      </div>
+    </div>
+
+    <div id="results-wrapper" class="hidden flex-col gap-4 mt-2">
+      <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-2">
+        <span id="search-stats" class="font-medium">正在載入數據...</span>
+        <span id="current-mode-label" class="font-semibold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg">搜尋結果</span>
+      </div>
+
+      <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="mt-auto border-t border-black/10 dark:border-white/10 py-6 text-center text-xs text-slate-400 dark:text-slate-500 glass-effect">
+    <p>© 2027 FR科技公司開發 Faekson搜尋引擎</p>
+  </footer>
+
+  <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-medium transition-all duration-300 pointer-events-none z-50 border border-white/10">
+    <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-500 text-base"></i>
+    <span id="toast-msg">操作成功</span>
+  </div>
+
+  <script>
+    let allData = [];
+    let bookmarks = JSON.parse(localStorage.getItem('faekson_bookmarks')) || [];
+    let currentCategory = 'all';
+    let isShowingBookmarks = false;
+
+    async function init() {
+      updateBookmarkBadge();
+      try {
+        // 確保帶入正確的 GitHub 連結與時間防快取參數
+        const fetchUrl = 'https://raw.githubusercontent.com/FR2027/Faekson_2/refs/heads/main/data.json?v=' + new Date().getTime();
+        const res = await fetch(fetchUrl);
+        if (!res.ok) throw new Error('HTTP 錯誤: ' + res.status);
+        allData = await res.json();
+        console.log('數據載入成功，共 ' + allData.length + ' 筆資料');
+      } catch (err) {
+        console.error('載入數據失敗:', err);
+        const stats = document.getElementById('search-stats');
+        if (stats) stats.innerText = '資料載入失敗（請確認 GitHub 連結與 JSON 格式）';
+      }
+    }
+
+    function renderResults(list, searchTime = 0) {
+      const container = document.getElementById('results-container');
+      const stats = document.getElementById('search-stats');
+
+      if (stats) {
+        stats.innerText = `找到 ${list.length} 個相關結果 ${searchTime ? `(${searchTime} 毫秒)` : ''}`;
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-400 dark:text-slate-500 glass-effect rounded-3xl border border-black/5 dark:border-white/5">
+            <i class="fa-solid fa-folder-open text-5xl mb-3 block opacity-40 text-blue-500"></i>
+            <p class="text-base font-semibold text-slate-700 dark:text-slate-300">未找到符合條件的網站</p>
+            <p class="text-xs mt-1.5 opacity-80">請嘗試換個關鍵字或切換上方的分類標籤</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(item => {
+        const isBookmarked = bookmarks.some(b => b.id === item.id);
+        const imageUrl = item.image || item.img || item.cover;
+        const safeSnippet = item.snippet || item.description || '';
+
+        return `
+          <div class="result-card bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-3xl p-6 hover:border-blue-500/50 flex flex-col justify-between shadow-lg dark:shadow-none">
+            <div>
+              ${imageUrl ? `
+                <div class="w-full h-44 mb-4 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-black/5 dark:border-white/5 relative group/img">
+                  <img src="${imageUrl}" alt="${item.title || ''}" class="w-full h-full object-cover group-hover/img:scale-105 transition duration-500" onerror="this.style.display='none'" />
+                </div>
+              ` : ''}
+
+              <div class="flex items-start justify-between gap-3 mb-2.5">
+                <a href="${item.url || '#'}" target="_blank" class="font-bold text-base text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition line-clamp-1 flex items-center gap-2 group/link">
+                  <span>${item.title || '無標題'}</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-0 group-hover/link:opacity-100 transition -translate-y-0.5"></i>
+                </a>
+                
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <button onclick="copyUrl('${item.url || ''}')" title="複製連結" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition">
+                    <i class="fa-regular fa-copy text-sm"></i>
+                  </button>
+                  <button onclick="toggleBookmark(${item.id})" title="加入/取消收藏" class="p-2 rounded-xl text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 transition">
+                    <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-star text-sm ${isBookmarked ? 'text-amber-400 drop-shadow' : ''}"></i>
+                  </button>
+                </div>
+              </div>
+
+              <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mb-5">${safeSnippet}</p>
+            </div>
+
+            <div>
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                ${(item.tags || []).map(tag => {
+                  const safeTag = String(tag).replace(/'/g, "\\'");
+                  return `<span onclick="clickTagSearch('${safeTag}')" class="cursor-pointer text-[11px] font-medium px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-300 hover:bg-blue-600/20 transition">#${tag}</span>`;
+                }).join('')}
+              </div>
+
+              <a href="${item.url || '#'}" target="_blank" class="text-[11px] font-mono text-slate-400 dark:text-slate-500 truncate block hover:text-blue-500 transition">
+                <i class="fa-solid fa-globe mr-1.5 opacity-60"></i>${item.url || ''}
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function switchToSearchMode() {
+      document.getElementById('home-hero-zone').classList.add('hidden');
+      document.getElementById('main-layout').classList.remove('justify-center');
+      document.getElementById('results-wrapper').classList.remove('hidden');
+      document.getElementById('results-wrapper').classList.add('flex');
+    }
+
+    function handleTyping() {
+      const query = document.getElementById('search-input').value.trim().toLowerCase();
+      const clearBtn = document.getElementById('clear-btn');
+      const box = document.getElementById('suggestions-box');
+      const list = document.getElementById('suggestions-list');
+
+      clearBtn.classList.toggle('hidden', query === '');
+
+      if (!query) {
+        box.classList.add('hidden');
+        return;
+      }
+
+      const matchedTitles = allData
+        .filter(item => 
+          (item.title && String(item.title).toLowerCase().includes(query)) || 
+          (item.tags || []).some(t => String(t).toLowerCase().includes(query))
+        )
+        .slice(0, 5);
+
+      if (matchedTitles.length === 0) {
+        box.classList.add('hidden');
+        return;
+      }
+
+      list.innerHTML = matchedTitles.map(item => {
+        const safeTitle = (item.title || '').replace(/'/g, "\\'");
+        return `
+          <div onclick="selectSuggestion('${safeTitle}')" class="px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer flex items-center justify-between transition text-sm text-slate-800 dark:text-slate-200">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-magnifying-glass text-xs text-blue-500"></i>
+              <span>${item.title || ''}</span>
+            </div>
+            <i class="fa-solid fa-arrow-up-left text-xs text-slate-400 opacity-60"></i>
+          </div>
+        `;
+      }).join('');
+
+      box.classList.remove('hidden');
+    }
+
+    function hideSuggestions(e) {
+      const box = document.getElementById('suggestions-box');
+      if (!e.target.closest('#suggestions-box') && !e.target.closest('#search-input')) {
+        box.classList.add('hidden');
+      }
+    }
+
+    function selectSuggestion(text) {
+      document.getElementById('search-input').value = text;
+      document.getElementById('suggestions-box').classList.add('hidden');
+      executeSearch();
+    }
+
+    function submitSearch(e) {
+      if (e) e.preventDefault();
+      document.getElementById('suggestions-box').classList.add('hidden');
+      executeSearch();
+    }
+
+    function clickTagSearch(tag) {
+      document.getElementById('search-input').value = tag;
+      executeSearch();
+    }
+
+    function executeSearch() {
+      const startTime = performance.now();
+      const query = document.getElementById('search-input').value.trim().toLowerCase();
+
+      if (!query && currentCategory === 'all' && !isShowingBookmarks) {
+        resetToHome();
+        return;
+      }
+
+      switchToSearchMode();
+
+      if (isShowingBookmarks) {
+        toggleBookmarksView();
+      }
+
+      let filtered = allData;
+
+      if (currentCategory !== 'all') {
+        filtered = filtered.filter(item => 
+          (item.tags || []).some(t => String(t).toLowerCase() === currentCategory.toLowerCase()) ||
+          (item.title && String(item.title).toLowerCase().includes(currentCategory.toLowerCase()))
+        );
+      }
+
+      if (query) {
+        filtered = filtered.filter(item => 
+          (item.title && String(item.title).toLowerCase().includes(query)) ||
+          (item.snippet && String(item.snippet).toLowerCase().includes(query)) ||
+          (item.description && String(item.description).toLowerCase().includes(query)) ||
+          (item.tags || []).some(t => String(t).toLowerCase().includes(query))
+        );
+      }
+
+      const endTime = performance.now();
+      renderResults(filtered, (endTime - startTime).toFixed(1));
+    }
+
+    function filterCategory(cat, e) {
+      if (currentCategory === cat) {
+        currentCategory = 'all';
+      } else {
+        currentCategory = cat;
+      }
+      
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'border-transparent');
+        btn.classList.add('bg-black/5', 'dark:bg-white/10', 'text-slate-700', 'dark:text-slate-200', 'border-black/5', 'dark:border-white/5');
+      });
+      
+      if (currentCategory !== 'all' && e && e.currentTarget) {
+        e.currentTarget.classList.remove('bg-black/5', 'dark:bg-white/10', 'text-slate-700', 'dark:text-slate-200', 'border-black/5', 'dark:border-white/5');
+        e.currentTarget.classList.add('bg-blue-600', 'text-white', 'shadow-md', 'border-transparent');
+      }
+
+      executeSearch();
+    }
+
+    function resetToHome() {
+      document.getElementById('search-input').value = '';
+      document.getElementById('clear-btn').classList.add('hidden');
+      document.getElementById('suggestions-box').classList.add('hidden');
+      currentCategory = 'all';
+      isShowingBookmarks = false;
+      document.getElementById('current-mode-label').innerText = '搜尋結果';
+
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'border-transparent');
+        btn.classList.add('bg-black/5', 'dark:bg-white/10', 'text-slate-700', 'dark:text-slate-200', 'border-black/5', 'dark:border-white/5');
+      });
+
+      document.getElementById('home-hero-zone').classList.remove('hidden');
+      document.getElementById('main-layout').classList.add('justify-center');
+      document.getElementById('results-wrapper').classList.add('hidden');
+      document.getElementById('results-wrapper').classList.remove('flex');
+    }
+
+    function clearSearch() {
+      document.getElementById('search-input').value = '';
+      document.getElementById('clear-btn').classList.add('hidden');
+      document.getElementById('suggestions-box').classList.add('hidden');
+      executeSearch();
+    }
+
+    function toggleBookmark(id) {
+      const index = bookmarks.findIndex(b => b.id === id);
+      const targetItem = allData.find(item => item.id === id);
+
+      if (index > -1) {
+        bookmarks.splice(index, 1);
+        showToast('已取消收藏');
+      } else if (targetItem) {
+        bookmarks.push(targetItem);
+        showToast('已加入我的收藏');
+      }
+
+      localStorage.setItem('faekson_bookmarks', JSON.stringify(bookmarks));
+      updateBookmarkBadge();
+
+      if (isShowingBookmarks) {
+        renderResults(bookmarks);
+      } else {
+        executeSearch();
+      }
+    }
+
+    function updateBookmarkBadge() {
+      const badge = document.getElementById('bookmark-count-badge');
+      if (badge) badge.innerText = bookmarks.length;
+    }
+
+    function toggleBookmarksView() {
+      isShowingBookmarks = !isShowingBookmarks;
+      const label = document.getElementById('current-mode-label');
+
+      if (isShowingBookmarks) {
+        switchToSearchMode();
+        if (label) label.innerText = '我的收藏清單';
+        renderResults(bookmarks);
+        showToast('切換至我的收藏');
+      } else {
+        if (label) label.innerText = '搜尋結果';
+        executeSearch();
+      }
+    }
+
+    function copyUrl(url) {
+      if (!url) return;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('網址已複製到剪貼簿！');
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      if (toast && toastMsg) {
+        toastMsg.innerText = msg;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        setTimeout(() => {
+          toast.classList.add('translate-y-20', 'opacity-0');
+        }, 2000);
+      }
+    }
+
+    function toggleDarkMode() {
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        icon.className = 'fa-solid fa-sun text-base text-amber-500';
+        showToast('已切換至明亮模式');
+      } else {
+        html.classList.add('dark');
+        icon.className = 'fa-solid fa-moon text-base text-slate-200';
+        showToast('已切換至深色模式');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      init();
+    });
+  </script>
+</body>
+</html>
