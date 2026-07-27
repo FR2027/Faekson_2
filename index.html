@@ -24,74 +24,88 @@
     }
   </script>
   <style>
-    /* 預設深色背景 */
+    /* 高質感漸層背景 */
     html.dark body {
-      background: linear-gradient(180deg, #0e172a 0%, #170d2b 50%, #0d0714 100%);
+      background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 50%, #030712 100%);
       color: #f8fafc;
+      background-attachment: fixed;
     }
-    /* 淺色背景 */
     html:not(.dark) body {
-      background: linear-gradient(180deg, #f8fafc 0%, #e0e7ff 50%, #f1f5f9 100%);
+      background: radial-gradient(circle at 50% 0%, #e0e7ff 0%, #f8fafc 50%, #f1f5f9 100%);
       color: #0f172a;
+      background-attachment: fixed;
     }
 
+    /* 精緻毛玻璃效果 */
     .glass-effect {
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
     html:not(.dark) .glass-effect {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    /* 卡片懸停流光與浮動感 */
+    .result-card {
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .result-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px -10px rgba(59, 130, 246, 0.2);
     }
 
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
+      height: 6px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
       background-color: rgba(255, 255, 255, 0.2);
       border-radius: 3px;
     }
     html:not(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.2);
+      background-color: rgba(0, 0, 0, 0.15);
     }
   </style>
 </head>
 <body class="flex flex-col font-sans transition-colors duration-300 min-h-screen" onclick="hideSuggestions(event)">
 
-  <header id="app-header" class="sticky top-0 z-50 glass-effect border-b border-black/10 dark:border-white/10 transition-all duration-300">
+  <header id="app-header" class="sticky top-0 z-50 glass-effect border-b border-black/10 dark:border-white/10 transition-all duration-300 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
       
       <button onclick="resetToHome()" class="flex items-center gap-2 group text-left focus:outline-none">
-        <img src="https://i.ibb.co/BSqfDsH/Background-Eraser-20260727-175238594.png" alt="Faekson Logo" class="h-8 w-auto object-contain dark:invert-0 invert" />
+        <img src="https://i.ibb.co/BSqfDsH/Background-Eraser-20260727-175238594.png" alt="Faekson Logo" class="h-8 w-auto object-contain dark:invert-0 invert transition transform group-hover:scale-105" />
       </button>
 
       <div class="flex items-center gap-3">
-        <button onclick="toggleBookmarksView()" id="bookmark-toggle-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10 transition">
+        <button onclick="toggleBookmarksView()" id="bookmark-toggle-btn" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10 transition shadow-sm">
           <i class="fa-solid fa-bookmark text-amber-500 dark:text-amber-400"></i>
           <span class="hidden sm:inline">我的收藏</span>
-          <span id="bookmark-count-badge" class="bg-blue-600 text-white text-xs px-1.5 py-0.5 rounded-full font-bold">0</span>
+          <span id="bookmark-count-badge" class="bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full font-bold shadow">0</span>
         </button>
 
-        <!-- 切換深淺色按鈕 -->
-        <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10 text-slate-700 dark:text-slate-200 transition">
-          <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
+        <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10 text-slate-700 dark:text-slate-200 transition shadow-sm">
+          <i id="theme-icon" class="fa-solid fa-moon text-base"></i>
         </button>
       </div>
     </div>
   </header>
 
-  <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-10 flex flex-col gap-6 justify-center transition-all duration-300" id="main-layout">
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-12 flex flex-col gap-8 justify-center transition-all duration-300" id="main-layout">
 
-    <div id="home-hero-zone" class="flex flex-col items-center justify-center py-6 transition-all duration-300">
-      <div class="cursor-pointer mb-2 transform hover:scale-105 transition duration-300" onclick="resetToHome()">
-        <img src="https://i.ibb.co/BSqfDsH/Background-Eraser-20260727-175238594.png" alt="Faekson Logo" class="w-64 sm:w-80 h-auto object-contain dark:invert-0 invert" />
+    <div id="home-hero-zone" class="flex flex-col items-center justify-center py-8 transition-all duration-300">
+      <div class="cursor-pointer mb-4 transform hover:scale-105 transition duration-500" onclick="resetToHome()">
+        <img src="https://i.ibb.co/BSqfDsH/Background-Eraser-20260727-175238594.png" alt="Faekson Logo" class="w-64 sm:w-80 h-auto object-contain dark:invert-0 invert drop-shadow-[0_10px_20px_rgba(59,130,246,0.15)]" />
       </div>
+      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium tracking-wide">探索極致快速與精準的智慧網頁搜尋</p>
     </div>
 
-    <div class="flex flex-col gap-5 relative">
+    <div class="flex flex-col gap-6 relative">
       <form onsubmit="submitSearch(event)" class="relative group">
-        <div class="w-full bg-white/70 dark:bg-[#3b2a68]/40 backdrop-blur-md border border-black/10 dark:border-white/15 rounded-full p-1.5 flex items-center shadow-xl dark:shadow-2xl focus-within:border-blue-500 transition">
-          <div class="pl-4 pr-2 text-slate-400 dark:text-white/50">
+        <div class="w-full bg-white/80 dark:bg-[#1e1b4b]/60 backdrop-blur-xl border border-black/10 dark:border-white/20 rounded-2xl p-2 flex items-center shadow-2xl dark:shadow-[0_0_40px_-10px_rgba(59,130,246,0.25)] focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-300">
+          <div class="pl-4 pr-3 text-slate-400 dark:text-blue-400">
             <i class="fa-solid fa-magnifying-glass text-lg"></i>
           </div>
           <input 
@@ -101,50 +115,50 @@
             onfocus="handleTyping()"
             placeholder="搜尋網頁名稱或關鍵字..." 
             autocomplete="off"
-            class="w-full bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/40 text-base px-2"
+            class="w-full bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 text-base px-2 py-1"
           />
-          <button type="button" id="clear-btn" onclick="clearSearch()" class="hidden pr-3 text-slate-400 hover:text-slate-700 dark:text-white/50 dark:hover:text-white">
+          <button type="button" id="clear-btn" onclick="clearSearch()" class="hidden pr-3 text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white transition">
             <i class="fa-solid fa-circle-xmark text-lg"></i>
           </button>
-          <button type="submit" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white font-medium px-6 py-3 rounded-full hover:brightness-110 shadow-lg shrink-0 transition">
+          <button type="submit" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium px-6 py-3 rounded-xl hover:brightness-110 shadow-lg shadow-blue-600/30 shrink-0 transition">
             搜尋
           </button>
         </div>
 
-        <div id="suggestions-box" class="hidden absolute left-0 right-0 top-full mt-2 bg-white/95 dark:bg-[#1b1531]/95 backdrop-blur-xl border border-black/10 dark:border-white/15 rounded-2xl shadow-2xl overflow-hidden z-50 py-2">
-          <div class="px-4 py-1.5 text-[11px] font-semibold text-slate-400 dark:text-white/40 tracking-wider">熱門搜尋提示</div>
+        <div id="suggestions-box" class="hidden absolute left-0 right-0 top-full mt-3 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-2xl border border-black/10 dark:border-white/15 rounded-2xl shadow-2xl overflow-hidden z-50 py-2">
+          <div class="px-4 py-2 text-[11px] font-bold text-slate-400 dark:text-slate-400 tracking-wider uppercase">熱門搜尋提示</div>
           <div id="suggestions-list" class="flex flex-col"></div>
         </div>
       </form>
 
-      <div class="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar text-sm justify-center" id="category-bar">
-        <button onclick="filterCategory('即時新聞', event)" class="cat-btn px-4 py-1.5 rounded-full font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-white/80 whitespace-nowrap transition">即時新聞</button>
-        <button onclick="filterCategory('FR', event)" class="cat-btn px-4 py-1.5 rounded-full font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-white/80 whitespace-nowrap transition">FR 專區</button>
-        <button onclick="filterCategory('ai', event)" class="cat-btn px-4 py-1.5 rounded-full font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-white/80 whitespace-nowrap transition">AI 工具</button>
-        <button onclick="filterCategory('程式', event)" class="cat-btn px-4 py-1.5 rounded-full font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-white/80 whitespace-nowrap transition">開發設計</button>
-        <button onclick="filterCategory('遊戲', event)" class="cat-btn px-4 py-1.5 rounded-full font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-white/80 whitespace-nowrap transition">娛樂遊戲</button>
-        <button onclick="filterCategory('免費', event)" class="cat-btn px-4 py-1.5 rounded-full font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-white/80 whitespace-nowrap transition">免費資源</button>
+      <div class="flex items-center gap-2.5 overflow-x-auto pb-2 custom-scrollbar text-sm justify-start sm:justify-center" id="category-bar">
+        <button onclick="filterCategory('即時新聞', event)" class="cat-btn px-4 py-2 rounded-xl font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 whitespace-nowrap transition shadow-sm border border-black/5 dark:border-white/5">即時新聞</button>
+        <button onclick="filterCategory('FR', event)" class="cat-btn px-4 py-2 rounded-xl font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 whitespace-nowrap transition shadow-sm border border-black/5 dark:border-white/5">FR 專區</button>
+        <button onclick="filterCategory('ai', event)" class="cat-btn px-4 py-2 rounded-xl font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 whitespace-nowrap transition shadow-sm border border-black/5 dark:border-white/5">AI 工具</button>
+        <button onclick="filterCategory('程式', event)" class="cat-btn px-4 py-2 rounded-xl font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 whitespace-nowrap transition shadow-sm border border-black/5 dark:border-white/5">開發設計</button>
+        <button onclick="filterCategory('遊戲', event)" class="cat-btn px-4 py-2 rounded-xl font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 whitespace-nowrap transition shadow-sm border border-black/5 dark:border-white/5">娛樂遊戲</button>
+        <button onclick="filterCategory('免費', event)" class="cat-btn px-4 py-2 rounded-xl font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 whitespace-nowrap transition shadow-sm border border-black/5 dark:border-white/5">免費資源</button>
       </div>
     </div>
 
-    <div id="results-wrapper" class="hidden flex-col gap-4 mt-4">
-      <div class="flex items-center justify-between text-xs text-slate-500 dark:text-white/50 px-1">
-        <span id="search-stats">正在載入數據...</span>
-        <span id="current-mode-label" class="font-medium text-slate-600 dark:text-white/60">搜尋結果</span>
+    <div id="results-wrapper" class="hidden flex-col gap-4 mt-2">
+      <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-2">
+        <span id="search-stats" class="font-medium">正在載入數據...</span>
+        <span id="current-mode-label" class="font-semibold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg">搜尋結果</span>
       </div>
 
-      <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
       </div>
     </div>
 
   </main>
 
-  <footer class="mt-auto border-t border-black/10 dark:border-white/10 py-6 text-center text-xs text-slate-400 dark:text-white/40">
+  <footer class="mt-auto border-t border-black/10 dark:border-white/10 py-6 text-center text-xs text-slate-400 dark:text-slate-500 glass-effect">
     <p>© 2027 FR科技公司 Faekson搜尋引擎 著作權所有 禁止盜版</p>
   </footer>
 
-  <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-sm font-medium transition-all duration-300 pointer-events-none z-50">
-    <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-500"></i>
+  <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-medium transition-all duration-300 pointer-events-none z-50 border border-white/10">
+    <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-500 text-base"></i>
     <span id="toast-msg">操作成功</span>
   </div>
 
@@ -157,7 +171,6 @@
     async function init() {
       updateBookmarkBadge();
       try {
-        // 67
         const fetchUrl = 'https://raw.githubusercontent.com/FR2027/Faekson_2/refs/heads/main/data.json?v=' + new Date().getTime();
         const res = await fetch(fetchUrl);
         if (!res.ok) throw new Error('HTTP 錯誤: ' + res.status);
@@ -180,10 +193,10 @@
 
       if (list.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full py-12 text-center text-slate-400 dark:text-white/40">
-            <i class="fa-solid fa-folder-open text-4xl mb-3 block opacity-50"></i>
-            <p class="text-base font-medium">未找到符合條件的網站</p>
-            <p class="text-xs mt-1">請嘗試換個關鍵字或切換分類標籤</p>
+          <div class="col-span-full py-16 text-center text-slate-400 dark:text-slate-500 glass-effect rounded-3xl border border-black/5 dark:border-white/5">
+            <i class="fa-solid fa-folder-open text-5xl mb-3 block opacity-40 text-blue-500"></i>
+            <p class="text-base font-semibold text-slate-700 dark:text-slate-300">未找到符合條件的網站</p>
+            <p class="text-xs mt-1.5 opacity-80">請嘗試換個關鍵字或切換上方的分類標籤</p>
           </div>
         `;
         return;
@@ -195,43 +208,43 @@
         const safeSnippet = item.snippet || item.description || '';
 
         return `
-          <div class="bg-white/80 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl p-5 hover:border-blue-500/50 hover:bg-white dark:hover:bg-white/10 transition flex flex-col justify-between group shadow-sm dark:shadow-none">
+          <div class="result-card bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-3xl p-6 hover:border-blue-500/50 flex flex-col justify-between shadow-lg dark:shadow-none">
             <div>
               ${imageUrl ? `
-                <div class="w-full h-40 mb-3 rounded-xl overflow-hidden bg-black/10 dark:bg-black/30">
-                  <img src="${imageUrl}" alt="${item.title || ''}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.style.display='none'" />
+                <div class="w-full h-44 mb-4 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-black/5 dark:border-white/5 relative group/img">
+                  <img src="${imageUrl}" alt="${item.title || ''}" class="w-full h-full object-cover group-hover/img:scale-105 transition duration-500" onerror="this.style.display='none'" />
                 </div>
               ` : ''}
 
-              <div class="flex items-start justify-between gap-2 mb-2">
-                <a href="${item.url || '#'}" target="_blank" class="font-bold text-slate-800 dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition line-clamp-1 flex items-center gap-2">
-                  ${item.title || '無標題'}
-                  <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-0 group-hover:opacity-100 transition"></i>
+              <div class="flex items-start justify-between gap-3 mb-2.5">
+                <a href="${item.url || '#'}" target="_blank" class="font-bold text-base text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition line-clamp-1 flex items-center gap-2 group/link">
+                  <span>${item.title || '無標題'}</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-0 group-hover/link:opacity-100 transition -translate-y-0.5"></i>
                 </a>
                 
-                <div class="flex items-center gap-1">
-                  <button onclick="copyUrl('${item.url || ''}')" title="複製連結" class="p-1.5 rounded-lg text-slate-400 dark:text-white/40 hover:text-slate-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition">
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <button onclick="copyUrl('${item.url || ''}')" title="複製連結" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition">
                     <i class="fa-regular fa-copy text-sm"></i>
                   </button>
-                  <button onclick="toggleBookmark(${item.id})" title="加入/取消收藏" class="p-1.5 rounded-lg text-slate-400 dark:text-white/40 hover:bg-black/5 dark:hover:bg-white/10 transition">
-                    <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-star text-sm ${isBookmarked ? 'text-amber-400' : ''}"></i>
+                  <button onclick="toggleBookmark(${item.id})" title="加入/取消收藏" class="p-2 rounded-xl text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 transition">
+                    <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-star text-sm ${isBookmarked ? 'text-amber-400 drop-shadow' : ''}"></i>
                   </button>
                 </div>
               </div>
 
-              <p class="text-xs text-slate-600 dark:text-white/60 line-clamp-2 leading-relaxed mb-4">${safeSnippet}</p>
+              <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mb-5">${safeSnippet}</p>
             </div>
 
             <div>
-              <div class="flex flex-wrap gap-1.5 mb-3">
+              <div class="flex flex-wrap gap-1.5 mb-4">
                 ${(item.tags || []).map(tag => {
                   const safeTag = String(tag).replace(/'/g, "\\'");
-                  return `<span onclick="clickTagSearch('${safeTag}')" class="cursor-pointer text-[11px] px-2 py-0.5 rounded-md bg-black/5 dark:bg-white/10 text-slate-600 dark:text-white/70 hover:bg-blue-600/20 dark:hover:bg-blue-600/30 hover:text-blue-600 dark:hover:text-blue-300 transition">#${tag}</span>`;
+                  return `<span onclick="clickTagSearch('${safeTag}')" class="cursor-pointer text-[11px] font-medium px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-300 hover:bg-blue-600/20 transition">#${tag}</span>`;
                 }).join('')}
               </div>
 
-              <a href="${item.url || '#'}" target="_blank" class="text-[11px] font-mono text-slate-400 dark:text-white/40 truncate block hover:underline">
-                ${item.url || ''}
+              <a href="${item.url || '#'}" target="_blank" class="text-[11px] font-mono text-slate-400 dark:text-slate-500 truncate block hover:text-blue-500 transition">
+                <i class="fa-solid fa-globe mr-1.5 opacity-60"></i>${item.url || ''}
               </a>
             </div>
           </div>
@@ -274,12 +287,12 @@
       list.innerHTML = matchedTitles.map(item => {
         const safeTitle = (item.title || '').replace(/'/g, "\\'");
         return `
-          <div onclick="selectSuggestion('${safeTitle}')" class="px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer flex items-center justify-between transition text-sm text-slate-800 dark:text-white/90">
+          <div onclick="selectSuggestion('${safeTitle}')" class="px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer flex items-center justify-between transition text-sm text-slate-800 dark:text-slate-200">
             <div class="flex items-center gap-3">
-              <i class="fa-solid fa-magnifying-glass text-xs text-slate-400 dark:text-white/40"></i>
+              <i class="fa-solid fa-magnifying-glass text-xs text-blue-500"></i>
               <span>${item.title || ''}</span>
             </div>
-            <i class="fa-solid fa-arrow-up-left text-xs text-slate-400 dark:text-white/30"></i>
+            <i class="fa-solid fa-arrow-up-left text-xs text-slate-400 opacity-60"></i>
           </div>
         `;
       }).join('');
@@ -315,7 +328,6 @@
       const startTime = performance.now();
       const query = document.getElementById('search-input').value.trim().toLowerCase();
 
-      // 只有在完全無關鍵字、無分類且未開啟收藏時，才回歸首頁
       if (!query && currentCategory === 'all' && !isShowingBookmarks) {
         resetToHome();
         return;
@@ -351,20 +363,19 @@
 
     function filterCategory(cat, e) {
       if (currentCategory === cat) {
-        // 二次點擊取消篩選
         currentCategory = 'all';
       } else {
         currentCategory = cat;
       }
       
       document.querySelectorAll('.cat-btn').forEach(btn => {
-        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
-        btn.classList.add('bg-black/5', 'dark:bg-white/10', 'text-slate-700', 'dark:text-white/80');
+        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'border-transparent');
+        btn.classList.add('bg-black/5', 'dark:bg-white/10', 'text-slate-700', 'dark:text-slate-200', 'border-black/5', 'dark:border-white/5');
       });
       
       if (currentCategory !== 'all' && e && e.currentTarget) {
-        e.currentTarget.classList.remove('bg-black/5', 'dark:bg-white/10', 'text-slate-700', 'dark:text-white/80');
-        e.currentTarget.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+        e.currentTarget.classList.remove('bg-black/5', 'dark:bg-white/10', 'text-slate-700', 'dark:text-slate-200', 'border-black/5', 'dark:border-white/5');
+        e.currentTarget.classList.add('bg-blue-600', 'text-white', 'shadow-md', 'border-transparent');
       }
 
       executeSearch();
@@ -376,66 +387,9 @@
       document.getElementById('suggestions-box').classList.add('hidden');
       currentCategory = 'all';
       isShowingBookmarks = false;
-      document.getElementById('current-mode-label').innerText = '搜尋結果';
-
-      document.querySelectorAll('.cat-btn').forEach(btn => {
-        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
-        btn.classList.add('bg-black/5', 'dark:bg-white/10', 'text-slate-700', 'dark:text-white/80');
-      });
-
-      document.getElementById('home-hero-zone').classList.remove('hidden');
-      document.getElementById('main-layout').classList.add('justify-center');
-      document.getElementById('results-wrapper').classList.add('hidden');
-      document.getElementById('results-wrapper').classList.remove('flex');
-    }
-
-    function clearSearch() {
-      document.getElementById('search-input').value = '';
-      document.getElementById('clear-btn').classList.add('hidden');
-      document.getElementById('suggestions-box').classList.add('hidden');
-      executeSearch();
-    }
-
-    function toggleBookmark(id) {
-      const index = bookmarks.findIndex(b => b.id === id);
-      const targetItem = allData.find(item => item.id === id);
-
-      if (index > -1) {
-        bookmarks.splice(index, 1);
-        showToast('已取消收藏');
-      } else if (targetItem) {
-        bookmarks.push(targetItem);
-        showToast('已加入我的收藏');
-      }
-
-      localStorage.setItem('faekson_bookmarks', JSON.stringify(bookmarks));
-      updateBookmarkBadge();
-
-      if (isShowingBookmarks) {
-        renderResults(bookmarks);
-      } else {
-        executeSearch();
-      }
-    }
-
-    function updateBookmarkBadge() {
-      const badge = document.getElementById('bookmark-count-badge');
-      if (badge) badge.innerText = bookmarks.length;
-    }
-
-    function toggleBookmarksView() {
-      isShowingBookmarks = !isShowingBookmarks;
-      const label = document.getElementById('current-mode-label');
-
-      if (isShowingBookmarks) {
-        switchToSearchMode();
-        if (label) label.innerText = '我的收藏清單';
-        renderResults(bookmarks);
-        showToast('切換至我的收藏');
-      } else {
         if (label) label.innerText = '搜尋結果';
         executeSearch();
-         }
+      }
     }
 
     function copyUrl(url) {
@@ -463,16 +417,15 @@
       
       if (html.classList.contains('dark')) {
         html.classList.remove('dark');
-        icon.className = 'fa-solid fa-sun text-lg text-amber-500';
+        icon.className = 'fa-solid fa-sun text-base text-amber-500';
         showToast('已切換至明亮模式');
       } else {
         html.classList.add('dark');
-        icon.className = 'fa-solid fa-moon text-lg text-slate-200';
+        icon.className = 'fa-solid fa-moon text-base text-slate-200';
         showToast('已切換至深色模式');
       }
     }
 
-    // 監聽 DOM 載入，確保 init 順利執行
     document.addEventListener('DOMContentLoaded', () => {
       init();
     });
