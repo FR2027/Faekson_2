@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Faekson Search</title>
+  <title>Faekson Search (系統維護中)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
@@ -80,6 +80,11 @@
       </button>
 
       <div class="flex items-center gap-3">
+        <!-- 當機狀態提示標籤 -->
+        <div class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-red-500/10 border border-red-500/20 text-red-500 animate-pulse">
+          <i class="fa-solid fa-triangle-exclamation"></i> 伺服器核心大當機 (503 Error)
+        </div>
+
         <button onclick="toggleBookmarksView()" id="bookmark-toggle-btn" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10 transition shadow-sm">
           <i class="fa-solid fa-bookmark text-amber-500 dark:text-amber-400"></i>
           <span class="hidden sm:inline">我的收藏</span>
@@ -97,9 +102,14 @@
 
     <div id="home-hero-zone" class="flex flex-col items-center justify-center py-8 transition-all duration-300">
       <div class="cursor-pointer mb-4 transform hover:scale-105 transition duration-500" onclick="resetToHome()">
-        <img src="https://i.ibb.co/sJRpyNmz/Background-Eraser-20260727-192939994.png" alt="Faekson Logo" class="w-64 sm:w-80 h-auto object-contain dark:invert-0 invert drop-shadow-[0_10px_20px_rgba(59,130,246,0.15)]" />
+        <img src="https://i.ibb.co/sJRpyNmz/Background-Eraser-20260727-192939994.png" alt="Faekson Logo" class="w-64 sm:w-80 h-auto object-contain dark:invert-0 invert drop-shadow-[0_10px_20px_rgba(59,130,246,0.15)] opacity-80" />
       </div>
-      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium tracking-wide">快速尋找你要的網站</p>
+      <!-- 原版風格的當機公告 -->
+      <div class="mt-2 px-4 py-2 rounded-2xl bg-red-500/10 border border-red-500/20 text-center max-w-md">
+        <p class="text-xs text-red-500 dark:text-red-400 font-bold flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-triangle-exclamation"></i> 警告：搜尋引擎主資料庫已崩潰，目前無法正常檢索
+        </p>
+      </div>
     </div>
 
     <div class="flex flex-col gap-6 relative">
@@ -113,7 +123,7 @@
             id="search-input"
             oninput="handleTyping()"
             onfocus="handleTyping()"
-            placeholder="搜尋網頁名稱或關鍵字..." 
+            placeholder="搜尋網頁名稱或關鍵字（目前系統當機中）..." 
             autocomplete="off"
             class="w-full bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 text-base px-2 py-1"
           />
@@ -143,8 +153,8 @@
 
     <div id="results-wrapper" class="hidden flex-col gap-4 mt-2">
       <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-2">
-        <span id="search-stats" class="font-medium">正在載入數據...</span>
-        <span id="current-mode-label" class="font-semibold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg">搜尋結果</span>
+        <span id="search-stats" class="font-medium text-red-500">連線逾時：無法取得遠端資料庫</span>
+        <span id="current-mode-label" class="font-semibold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg">搜尋結果 (離線狀態)</span>
       </div>
 
       <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -154,12 +164,12 @@
   </main>
 
   <footer class="mt-auto border-t border-black/10 dark:border-white/10 py-6 text-center text-xs text-slate-400 dark:text-slate-500 glass-effect">
-    <p>© 2027 FR科技公司開發 Faekson搜尋引擎</p>
+    <p>© 2027 FR科技公司開發 Faekson搜尋引擎 <span class="text-red-500 font-semibold">[ 系統發生重大故障 ]</span></p>
   </footer>
 
   <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-medium transition-all duration-300 pointer-events-none z-50 border border-white/10">
-    <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-500 text-base"></i>
-    <span id="toast-msg">操作成功</span>
+    <i id="toast-icon" class="fa-solid fa-triangle-exclamation text-red-500 text-base"></i>
+    <span id="toast-msg">伺服器連線失敗</span>
   </div>
 
   <script>
@@ -171,16 +181,15 @@
     async function init() {
       updateBookmarkBadge();
       try {
-        // 確保帶入正確的 GitHub 連結與時間防快取參數
-        const fetchUrl = 'https://raw.githubusercontent.com/FR2027/Faekson_2/refs/heads/main/data.json?v=' + new Date().getTime();
-        const res = await fetch(fetchUrl);
-        if (!res.ok) throw new Error('HTTP 錯誤: ' + res.status);
-        allData = await res.json();
-        console.log('數據載入成功，共 ' + allData.length + ' 筆資料');
+        // 刻意製造載入失敗或模擬當機攔截
+        throw new Error('503 Service Unavailable');
       } catch (err) {
-        console.error('載入數據失敗:', err);
+        console.error('數據載入失敗 (模擬大當機):', err);
         const stats = document.getElementById('search-stats');
-        if (stats) stats.innerText = '資料載入失敗（請確認 GitHub 連結與 JSON 格式）';
+        if (stats) stats.innerText = '⚠️ 嚴重錯誤：無法連線至 GitHub 伺服器節點 (Connection Timeout)';
+        
+        // 載入失敗時提供空的資料或預設當機提示清單
+        allData = [];
       }
     }
 
@@ -189,68 +198,20 @@
       const stats = document.getElementById('search-stats');
 
       if (stats) {
-        stats.innerText = `找到 ${list.length} 個相關結果 ${searchTime ? `(${searchTime} 毫秒)` : ''}`;
+        stats.innerText = `⚠️ 伺服器當機中：無法完成查詢 (耗時 ${searchTime} 毫秒)`;
       }
 
-      if (list.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full py-16 text-center text-slate-400 dark:text-slate-500 glass-effect rounded-3xl border border-black/5 dark:border-white/5">
-            <i class="fa-solid fa-folder-open text-5xl mb-3 block opacity-40 text-blue-500"></i>
-            <p class="text-base font-semibold text-slate-700 dark:text-slate-300">未找到符合條件的網站</p>
-            <p class="text-xs mt-1.5 opacity-80">請嘗試換個關鍵字或切換上方的分類標籤</p>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = list.map(item => {
-        const isBookmarked = bookmarks.some(b => b.id === item.id);
-        const imageUrl = item.image || item.img || item.cover;
-        const safeSnippet = item.snippet || item.description || '';
-
-        return `
-          <div class="result-card bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-3xl p-6 hover:border-blue-500/50 flex flex-col justify-between shadow-lg dark:shadow-none">
-            <div>
-              ${imageUrl ? `
-                <div class="w-full h-44 mb-4 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-black/5 dark:border-white/5 relative group/img">
-                  <img src="${imageUrl}" alt="${item.title || ''}" class="w-full h-full object-cover group-hover/img:scale-105 transition duration-500" onerror="this.style.display='none'" />
-                </div>
-              ` : ''}
-
-              <div class="flex items-start justify-between gap-3 mb-2.5">
-                <a href="${item.url || '#'}" target="_blank" class="font-bold text-base text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition line-clamp-1 flex items-center gap-2 group/link">
-                  <span>${item.title || '無標題'}</span>
-                  <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-0 group-hover/link:opacity-100 transition -translate-y-0.5"></i>
-                </a>
-                
-                <div class="flex items-center gap-1.5 shrink-0">
-                  <button onclick="copyUrl('${item.url || ''}')" title="複製連結" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition">
-                    <i class="fa-regular fa-copy text-sm"></i>
-                  </button>
-                  <button onclick="toggleBookmark(${item.id})" title="加入/取消收藏" class="p-2 rounded-xl text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 transition">
-                    <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-star text-sm ${isBookmarked ? 'text-amber-400 drop-shadow' : ''}"></i>
-                  </button>
-                </div>
-              </div>
-
-              <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mb-5">${safeSnippet}</p>
-            </div>
-
-            <div>
-              <div class="flex flex-wrap gap-1.5 mb-4">
-                ${(item.tags || []).map(tag => {
-                  const safeTag = String(tag).replace(/'/g, "\\'");
-                  return `<span onclick="clickTagSearch('${safeTag}')" class="cursor-pointer text-[11px] font-medium px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-300 hover:bg-blue-600/20 transition">#${tag}</span>`;
-                }).join('')}
-              </div>
-
-              <a href="${item.url || '#'}" target="_blank" class="text-[11px] font-mono text-slate-400 dark:text-slate-500 truncate block hover:text-blue-500 transition">
-                <i class="fa-solid fa-globe mr-1.5 opacity-60"></i>${item.url || ''}
-              </a>
-            </div>
-          </div>
-        `;
-      }).join('');
+      // 直接顯示大當機的畫面
+      container.innerHTML = `
+        <div class="col-span-full py-16 text-center text-slate-400 dark:text-slate-500 glass-effect rounded-3xl border border-red-500/30">
+          <i class="fa-solid fa-triangle-exclamation text-5xl mb-3 block opacity-60 text-red-500 animate-bounce"></i>
+          <p class="text-base font-semibold text-slate-700 dark:text-slate-300">搜尋引擎核心已當機</p>
+          <p class="text-xs mt-1.5 text-red-500 dark:text-red-400 font-mono">ERR_CONNECTION_REFUSED / 伺服器沒有回應任何資料</p>
+          <button onclick="location.reload()" class="mt-6 px-4 py-2 rounded-xl bg-red-600 text-white text-xs font-bold hover:bg-red-700 transition shadow-lg">
+            重新嘗試連線
+          </button>
+        </div>
+      `;
     }
 
     function switchToSearchMode() {
@@ -264,59 +225,17 @@
       const query = document.getElementById('search-input').value.trim().toLowerCase();
       const clearBtn = document.getElementById('clear-btn');
       const box = document.getElementById('suggestions-box');
-      const list = document.getElementById('suggestions-list');
-
       clearBtn.classList.toggle('hidden', query === '');
-
-      if (!query) {
-        box.classList.add('hidden');
-        return;
-      }
-
-      const matchedTitles = allData
-        .filter(item => 
-          (item.title && String(item.title).toLowerCase().includes(query)) || 
-          (item.tags || []).some(t => String(t).toLowerCase().includes(query))
-        )
-        .slice(0, 5);
-
-      if (matchedTitles.length === 0) {
-        box.classList.add('hidden');
-        return;
-      }
-
-      list.innerHTML = matchedTitles.map(item => {
-        const safeTitle = (item.title || '').replace(/'/g, "\\'");
-        return `
-          <div onclick="selectSuggestion('${safeTitle}')" class="px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer flex items-center justify-between transition text-sm text-slate-800 dark:text-slate-200">
-            <div class="flex items-center gap-3">
-              <i class="fa-solid fa-magnifying-glass text-xs text-blue-500"></i>
-              <span>${item.title || ''}</span>
-            </div>
-            <i class="fa-solid fa-arrow-up-left text-xs text-slate-400 opacity-60"></i>
-          </div>
-        `;
-      }).join('');
-
-      box.classList.remove('hidden');
+      box.classList.add('hidden'); // 當機時不顯示提示選單
     }
 
     function hideSuggestions(e) {
       const box = document.getElementById('suggestions-box');
-      if (!e.target.closest('#suggestions-box') && !e.target.closest('#search-input')) {
-        box.classList.add('hidden');
-      }
-    }
-
-    function selectSuggestion(text) {
-      document.getElementById('search-input').value = text;
-      document.getElementById('suggestions-box').classList.add('hidden');
-      executeSearch();
+      if (box) box.classList.add('hidden');
     }
 
     function submitSearch(e) {
       if (e) e.preventDefault();
-      document.getElementById('suggestions-box').classList.add('hidden');
       executeSearch();
     }
 
@@ -340,26 +259,8 @@
         toggleBookmarksView();
       }
 
-      let filtered = allData;
-
-      if (currentCategory !== 'all') {
-        filtered = filtered.filter(item => 
-          (item.tags || []).some(t => String(t).toLowerCase() === currentCategory.toLowerCase()) ||
-          (item.title && String(item.title).toLowerCase().includes(currentCategory.toLowerCase()))
-        );
-      }
-
-      if (query) {
-        filtered = filtered.filter(item => 
-          (item.title && String(item.title).toLowerCase().includes(query)) ||
-          (item.snippet && String(item.snippet).toLowerCase().includes(query)) ||
-          (item.description && String(item.description).toLowerCase().includes(query)) ||
-          (item.tags || []).some(t => String(t).toLowerCase().includes(query))
-        );
-      }
-
       const endTime = performance.now();
-      renderResults(filtered, (endTime - startTime).toFixed(1));
+      renderResults([], (endTime - startTime).toFixed(1));
     }
 
     function filterCategory(cat, e) {
@@ -388,7 +289,7 @@
       document.getElementById('suggestions-box').classList.add('hidden');
       currentCategory = 'all';
       isShowingBookmarks = false;
-      document.getElementById('current-mode-label').innerText = '搜尋結果';
+      document.getElementById('current-mode-label').innerText = '搜尋結果 (離線狀態)';
 
       document.querySelectorAll('.cat-btn').forEach(btn => {
         btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'border-transparent');
@@ -404,30 +305,11 @@
     function clearSearch() {
       document.getElementById('search-input').value = '';
       document.getElementById('clear-btn').classList.add('hidden');
-      document.getElementById('suggestions-box').classList.add('hidden');
       executeSearch();
     }
 
     function toggleBookmark(id) {
-      const index = bookmarks.findIndex(b => b.id === id);
-      const targetItem = allData.find(item => item.id === id);
-
-      if (index > -1) {
-        bookmarks.splice(index, 1);
-        showToast('已取消收藏');
-      } else if (targetItem) {
-        bookmarks.push(targetItem);
-        showToast('已加入我的收藏');
-      }
-
-      localStorage.setItem('faekson_bookmarks', JSON.stringify(bookmarks));
-      updateBookmarkBadge();
-
-      if (isShowingBookmarks) {
-        renderResults(bookmarks);
-      } else {
-        executeSearch();
-      }
+      showToast('伺服器當機，無法同步收藏資料');
     }
 
     function updateBookmarkBadge() {
@@ -443,7 +325,6 @@
         switchToSearchMode();
         if (label) label.innerText = '我的收藏清單';
         renderResults(bookmarks);
-        showToast('切換至我的收藏');
       } else {
         if (label) label.innerText = '搜尋結果';
         executeSearch();
@@ -451,10 +332,7 @@
     }
 
     function copyUrl(url) {
-      if (!url) return;
-      navigator.clipboard.writeText(url).then(() => {
-        showToast('網址已複製到剪貼簿！');
-      });
+      showToast('連線中斷，無法複製');
     }
 
     function showToast(msg) {
@@ -490,3 +368,4 @@
   </script>
 </body>
 </html>
+
