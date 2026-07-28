@@ -161,7 +161,7 @@
       <div class="cursor-pointer mb-4 transform hover:scale-105 transition duration-500" onclick="resetToHome()">
         <img src="https://i.ibb.co/sJRpyNmz/Background-Eraser-20260727-192939994.png" alt="Faekson Logo" class="w-64 sm:w-80 h-auto object-contain dark:invert-0 invert drop-shadow-[0_10px_25px_rgba(59,130,246,0.3)]" />
       </div>
-      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium tracking-wide">本地智能極速搜尋引擎</p>
+      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium tracking-wide">本地智能與雲端雙引擎搜尋</p>
     </div>
 
     <!-- 搜尋列與即時建議 -->
@@ -176,7 +176,7 @@
             id="search-input"
             oninput="handleTyping()"
             onfocus="handleTyping()"
-            placeholder="搜尋網頁、算式 (例: 50*3)，或PRO搜尋引擎搜尋..." 
+            placeholder="搜尋網頁、算式 (例: 50*3)，同步查詢本地與雲端PRO引擎..." 
             autocomplete="off"
             class="w-full bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder-slate-400 text-base px-2 py-1"
           />
@@ -207,16 +207,26 @@
     </div>
 
     <!-- 搜尋結果展示區 -->
-    <div id="results-wrapper" class="hidden flex-col gap-4 mt-2 animate-fade-in-up">
+    <div id="results-wrapper" class="hidden flex-col gap-6 mt-2 animate-fade-in-up">
       <!-- 智慧小工具嵌入區 (如計算機結果) -->
       <div id="widget-container"></div>
 
-      <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-2">
-        <span id="search-stats" class="font-medium">正在載入數據...</span>
-        <span id="current-mode-label" class="font-semibold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg">搜尋結果</span>
+      <!-- 區塊一：本地資料庫結果 -->
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-2 border-b border-black/5 dark:border-white/5 pb-2">
+          <span class="font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5"><i class="fa-solid fa-database"></i> 本地資料庫結果</span>
+          <span id="local-stats" class="font-medium">載入中...</span>
+        </div>
+        <div id="local-results-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
 
-      <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <!-- 區塊二：PRO雲端引擎結果 -->
+      <div class="flex flex-col gap-3 mt-4">
+        <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-2 border-b border-black/5 dark:border-white/5 pb-2">
+          <span class="font-bold text-amber-500 dark:text-amber-400 flex items-center gap-1.5"><i class="fa-solid fa-cloud-arrow-down"></i> PRO雲端引擎結果</span>
+          <span id="cloud-stats" class="font-medium">同步查詢中...</span>
+        </div>
+        <div id="cloud-results-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
     </div>
 
@@ -297,8 +307,6 @@
         console.log('數據載入成功，共 ' + allData.length + ' 筆資料');
       } catch (err) {
         console.error('載入數據失敗:', err);
-        const stats = document.getElementById('search-stats');
-        if (stats) stats.innerText = '本地資料庫載入失敗，將自動轉為PRO搜尋引擎';
       }
     }
 
@@ -332,80 +340,85 @@
       }
     }
 
-    function renderResults(list, searchTime = 0, isGoogleFallback = false) {
-      const container = document.getElementById('results-container');
-      const stats = document.getElementById('search-stats');
+    function renderCardHTML(item, index, prefixId) {
+      const isBookmarked = bookmarks.some(b => b.id === item.id);
+      const imageUrl = item.image || item.img || item.cover;
+      const safeSnippet = item.snippet || item.description || '';
+      const uniqueId = item.id || (prefixId + '_' + index);
+      const delayStyle = `animation-delay: ${index * 0.05}s`;
 
-      if (stats) {
-        if (isGoogleFallback) {
-          stats.innerHTML = `<span class="text-amber-500 font-semibold"><i class="fa-solid fa-cloud-arrow-down mr-1"></i> 本地未收錄，已透過PRO搜尋引擎呈現結果 (${searchTime} 毫秒)</span>`;
-        } else {
-          stats.innerText = `找到 ${list.length} 個相關結果 ${searchTime ? `(${searchTime} 毫秒)` : ''}`;
-        }
-      }
+      return `
+        <div class="result-card liquid-glass rounded-3xl p-6 flex flex-col justify-between shadow-lg" style="${delayStyle}">
+          <div>
+            ${imageUrl ? `
+              <div class="w-full h-44 mb-4 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-white/5 relative group/img">
+                <img src="${imageUrl}" alt="${item.title || ''}" class="w-full h-full object-cover group-hover/img:scale-105 transition duration-500" onerror="this.style.display='none'" />
+              </div>
+            ` : ''}
+
+            <div class="flex items-start justify-between gap-3 mb-2.5">
+              <a href="${item.url || '#'}" target="_blank" class="font-bold text-base text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition line-clamp-1 flex items-center gap-2 group/link">
+                <span>${item.title || '無標題'}</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-0 group-hover/link:opacity-100 transition -translate-y-0.5"></i>
+              </a>
+              
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button onclick="copyUrl('${item.url || ''}')" title="複製連結" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition">
+                  <i class="fa-regular fa-copy text-sm"></i>
+                </button>
+                <button onclick="toggleBookmark('${uniqueId}')" title="加入/取消收藏" class="p-2 rounded-xl text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 transition">
+                  <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-star text-sm ${isBookmarked ? 'text-amber-400 drop-shadow' : ''}"></i>
+                </button>
+              </div>
+            </div>
+
+            <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mb-5">${safeSnippet}</p>
+          </div>
+
+          <div>
+            ${item.tags && item.tags.length > 0 ? `
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                ${item.tags.map(tag => {
+                  const safeTag = String(tag).replace(/'/g, "\\'");
+                  return `<span onclick="clickTagSearch('${safeTag}')" class="cursor-pointer text-[11px] font-medium px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-300 hover:bg-blue-600/20 transition">#${tag}</span>`;
+                }).join('')}
+              </div>
+            ` : ''}
+
+            <a href="${item.url || '#'}" target="_blank" class="text-[11px] font-mono text-slate-400 dark:text-slate-500 truncate block hover:text-blue-500 transition">
+              <i class="fa-solid fa-globe mr-1.5 opacity-60"></i>${item.url || ''}
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLocalResults(list, searchTime = 0) {
+      const container = document.getElementById('local-results-container');
+      const stats = document.getElementById('local-stats');
+
+      if (stats) stats.innerText = `找到 ${list.length} 筆資料 (${searchTime}ms)`;
 
       if (list.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full py-16 text-center text-slate-400 dark:text-slate-500 liquid-glass rounded-3xl">
-            <i class="fa-solid fa-folder-open text-5xl mb-3 block opacity-40 text-blue-500"></i>
-            <p class="text-base font-semibold text-slate-700 dark:text-slate-300">未找到符合條件的網頁</p>
-            <p class="text-xs mt-1.5 opacity-80">請嘗試換個關鍵字、計算式或切換上方的分類標籤</p>
-          </div>
-        `;
+        container.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-slate-400 liquid-glass rounded-2xl">本地無相關資料</div>`;
         return;
       }
 
-      container.innerHTML = list.map((item, index) => {
-        const isBookmarked = bookmarks.some(b => b.id === item.id);
-        const imageUrl = item.image || item.img || item.cover;
-        const safeSnippet = item.snippet || item.description || '';
-        const delayStyle = `animation-delay: ${index * 0.05}s`;
+      container.innerHTML = list.map((item, index) => renderCardHTML(item, index, 'local')).join('');
+    }
 
-        return `
-          <div class="result-card liquid-glass rounded-3xl p-6 flex flex-col justify-between shadow-lg" style="${delayStyle}">
-            <div>
-              ${imageUrl ? `
-                <div class="w-full h-44 mb-4 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-white/5 relative group/img">
-                  <img src="${imageUrl}" alt="${item.title || ''}" class="w-full h-full object-cover group-hover/img:scale-105 transition duration-500" onerror="this.style.display='none'" />
-                </div>
-              ` : ''}
+    function renderCloudResults(list, searchTime = 0) {
+      const container = document.getElementById('cloud-results-container');
+      const stats = document.getElementById('cloud-stats');
 
-              <div class="flex items-start justify-between gap-3 mb-2.5">
-                <a href="${item.url || '#'}" target="_blank" class="font-bold text-base text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition line-clamp-1 flex items-center gap-2 group/link">
-                  <span>${item.title || '無標題'}</span>
-                  <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-0 group-hover/link:opacity-100 transition -translate-y-0.5"></i>
-                </a>
-                
-                <div class="flex items-center gap-1.5 shrink-0">
-                  <button onclick="copyUrl('${item.url || ''}')" title="複製連結" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition">
-                    <i class="fa-regular fa-copy text-sm"></i>
-                  </button>
-                  <button onclick="toggleBookmark('${item.id || ('g_' + index)}')" title="加入/取消收藏" class="p-2 rounded-xl text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 transition">
-                    <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-star text-sm ${isBookmarked ? 'text-amber-400 drop-shadow' : ''}"></i>
-                  </button>
-                </div>
-              </div>
+      if (stats) stats.innerText = `找到 ${list.length} 筆雲端結果 (${searchTime}ms)`;
 
-              <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mb-5">${safeSnippet}</p>
-            </div>
+      if (list.length === 0) {
+        container.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-slate-400 liquid-glass rounded-2xl">雲端暫無結果或連線逾時</div>`;
+        return;
+      }
 
-            <div>
-              ${item.tags && item.tags.length > 0 ? `
-                <div class="flex flex-wrap gap-1.5 mb-4">
-                  ${item.tags.map(tag => {
-                    const safeTag = String(tag).replace(/'/g, "\\'");
-                    return `<span onclick="clickTagSearch('${safeTag}')" class="cursor-pointer text-[11px] font-medium px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-300 hover:bg-blue-600/20 transition">#${tag}</span>`;
-                  }).join('')}
-                </div>
-              ` : ''}
-
-              <a href="${item.url || '#'}" target="_blank" class="text-[11px] font-mono text-slate-400 dark:text-slate-500 truncate block hover:text-blue-500 transition">
-                <i class="fa-solid fa-globe mr-1.5 opacity-60"></i>${item.url || ''}
-              </a>
-            </div>
-          </div>
-        `;
-      }).join('');
+      container.innerHTML = list.map((item, index) => renderCardHTML(item, index, 'cloud')).join('');
     }
 
     function switchToSearchMode() {
@@ -480,9 +493,8 @@
       executeSearch();
     }
 
-    // 核心搜尋與PRO搜尋引擎備援機制
+    // 同步查詢本地與雲端 DuckDuckGo PRO 引擎
     async function executeSearch() {
-      const startTime = performance.now();
       const query = document.getElementById('search-input').value.trim().toLowerCase();
 
       if (!query && currentCategory === 'all' && !isShowingBookmarks) {
@@ -504,26 +516,32 @@
 
       checkSmartWidgets(query);
 
-      let filtered = allData;
+      // 1. 本地資料過濾
+      const localStart = performance.now();
+      let filteredLocal = allData;
 
       if (currentCategory !== 'all') {
-        filtered = filtered.filter(item => 
+        filteredLocal = filteredLocal.filter(item => 
           (item.tags || []).some(t => String(t).toLowerCase() === currentCategory.toLowerCase()) ||
           (item.title && String(item.title).toLowerCase().includes(currentCategory.toLowerCase()))
         );
       }
 
       if (query) {
-        filtered = filtered.filter(item => 
+        filteredLocal = filteredLocal.filter(item => 
           (item.title && String(item.title).toLowerCase().includes(query)) ||
           (item.snippet && String(item.snippet).toLowerCase().includes(query)) ||
           (item.description && String(item.description).toLowerCase().includes(query)) ||
           (item.tags || []).some(t => String(t).toLowerCase().includes(query))
         );
       }
+      const localEnd = performance.now();
+      renderLocalResults(filteredLocal, (localEnd - localStart).toFixed(1));
 
-      // 如果本地找不到結果，透過PRO搜尋引擎備援（利用 DuckDuckGo HTML API 抓取並轉換）
-      if (filtered.length === 0 && query && currentCategory === 'all') {
+      // 2. 雲端 PRO 引擎同步查詢 (DuckDuckGo 跨域代理)
+      const cloudStart = performance.now();
+      if (query) {
+        document.getElementById('cloud-stats').innerText = '雲端查詢中...';
         try {
           const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://html.duckduckgo.com/html/?q=' + encodeURIComponent(query))}`;
           const res = await fetch(proxyUrl);
@@ -531,36 +549,33 @@
           if (data && data.contents) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(data.contents, 'text/html');
-            const results = [];
+            const cloudResults = [];
             doc.querySelectorAll('.result').forEach((el, idx) => {
               const titleEl = el.querySelector('.result__title');
               const snippetEl = el.querySelector('.result__snippet');
               const linkEl = el.querySelector('.result__url');
               if (titleEl && linkEl) {
-                results.push({
+                cloudResults.push({
                   id: 'cloud_' + idx,
                   title: titleEl.textContent.trim(),
                   snippet: snippetEl ? snippetEl.textContent.trim() : '無摘要說明',
                   url: linkEl.href || '#',
-                  tags: ['PRO搜尋引擎']
+                  tags: ['PRO引擎']
                 });
               }
             });
-
-            const endTime = performance.now();
-            if (results.length > 0) {
-              renderResults(results.slice(0, 10), (endTime - startTime).toFixed(1), true);
-              showToast('使用PRO搜尋引擎搜尋');
-              return;
-            }
+            const cloudEnd = performance.now();
+            renderCloudResults(cloudResults.slice(0, 8), (cloudEnd - cloudStart).toFixed(1));
+          } else {
+            renderCloudResults([], 0);
           }
         } catch (err) {
-          console.warn('PRO搜尋引擎連線失敗:', err);
+          console.warn('雲端 PRO 引擎連線失敗:', err);
+          renderCloudResults([], 0);
         }
+      } else {
+        renderCloudResults([], 0);
       }
-
-      const endTime = performance.now();
-      renderResults(filtered, (endTime - startTime).toFixed(1), false);
     }
 
     function filterCategory(cat, e) {
@@ -590,7 +605,6 @@
       document.getElementById('widget-container').innerHTML = '';
       currentCategory = 'all';
       isShowingBookmarks = false;
-      document.getElementById('current-mode-label').innerText = '搜尋結果';
 
       document.querySelectorAll('.cat-btn').forEach(btn => {
         btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'border-transparent');
@@ -626,7 +640,7 @@
       updateBookmarkBadge();
 
       if (isShowingBookmarks) {
-        renderResults(bookmarks);
+        renderLocalResults(bookmarks);
       } else {
         executeSearch();
       }
@@ -639,16 +653,14 @@
 
     function toggleBookmarksView() {
       isShowingBookmarks = !isShowingBookmarks;
-      const label = document.getElementById('current-mode-label');
       document.getElementById('widget-container').innerHTML = '';
 
       if (isShowingBookmarks) {
         switchToSearchMode();
-        if (label) label.innerText = '我的收藏清單';
-        renderResults(bookmarks);
+        renderLocalResults(bookmarks);
+        renderCloudResults([], 0);
         showToast('切換至我的收藏');
       } else {
-        if (label) label.innerText = '搜尋結果';
         executeSearch();
       }
     }
