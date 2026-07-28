@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Faekson Search - 智能液態玻璃升級版</title>
+  <title>Faekson Search</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
@@ -161,7 +161,7 @@
       <div class="cursor-pointer mb-4 transform hover:scale-105 transition duration-500" onclick="resetToHome()">
         <img src="https://i.ibb.co/sJRpyNmz/Background-Eraser-20260727-192939994.png" alt="Faekson Logo" class="w-64 sm:w-80 h-auto object-contain dark:invert-0 invert drop-shadow-[0_10px_25px_rgba(59,130,246,0.3)]" />
       </div>
-      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium tracking-wide">本地智能與雲端備援搜尋引擎</p>
+      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium tracking-wide">本地智能極速搜尋引擎</p>
     </div>
 
     <!-- 搜尋列與即時建議 -->
@@ -176,7 +176,7 @@
             id="search-input"
             oninput="handleTyping()"
             onfocus="handleTyping()"
-            placeholder="搜尋網頁、算式 (例: 50*3)，或自動雲端備援搜尋..." 
+            placeholder="搜尋網頁、算式 (例: 50*3)，或PRO引擎搜尋..." 
             autocomplete="off"
             class="w-full bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder-slate-400 text-base px-2 py-1"
           />
@@ -550,12 +550,12 @@
             const endTime = performance.now();
             if (results.length > 0) {
               renderResults(results.slice(0, 10), (endTime - startTime).toFixed(1), true);
-              showToast('已啟動雲端備援搜尋');
+              showToast('使用PRO引擎搜尋');
               return;
             }
           }
         } catch (err) {
-          console.warn('雲端備援連線失敗:', err);
+          console.warn('PRO引擎連線失敗:', err);
         }
       }
 
