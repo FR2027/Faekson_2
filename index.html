@@ -12,15 +12,15 @@
       theme: {
         extend: {
           animation: {
-            'liquid-float': 'liquidFloat 10s ease-in-out infinite',
+            'liquid-float': 'liquidFloat 12s ease-in-out infinite',
             'fade-in-up': 'fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
             'skeleton': 'skeletonPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           },
           keyframes: {
             liquidFloat: {
               '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
-              '33%': { transform: 'translate(30px, -40px) scale(1.1)' },
-              '66%': { transform: 'translate(-20px, 20px) scale(0.95)' },
+              '33%': { transform: 'translate(40px, -50px) scale(1.15)' },
+              '66%': { transform: 'translate(-30px, 30px) scale(0.9)' },
             },
             fadeInUp: {
               '0%': { opacity: '0', transform: 'translateY(16px)' },
@@ -38,42 +38,43 @@
   <style>
     .liquid-bg-blob {
       position: absolute;
-      filter: blur(90px);
+      filter: blur(100px);
       z-index: -1;
-      opacity: 0.5;
+      opacity: 0.6;
       pointer-events: none;
       border-radius: 50%;
     }
 
     html.dark body {
-      background: #090d16;
+      background: #060913;
       color: #f1f5f9;
       background-attachment: fixed;
     }
     html:not(.dark) body {
-      background: #f8fafc;
+      background: #f1f5f9;
       color: #0f172a;
       background-attachment: fixed;
     }
 
-    .clean-card {
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s ease;
+    /* 極致液態玻璃質感 (Liquid Glassmorphism) */
+    .liquid-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    html.dark .clean-card {
-      background: rgba(15, 23, 42, 0.75);
+    html.dark .liquid-card {
+      background: rgba(13, 19, 33, 0.65);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
     }
 
-    .clean-card:hover {
+    .liquid-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 16px 35px -10px rgba(59, 130, 246, 0.2);
-      border-color: rgba(59, 130, 246, 0.4);
+      box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+      border-color: rgba(59, 130, 246, 0.5);
     }
 
     .custom-scrollbar::-webkit-scrollbar {
@@ -90,58 +91,54 @@
 
   <!-- 背景流動光暈 -->
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
-    <div class="liquid-bg-blob w-[500px] h-[500px] bg-blue-500/20 dark:bg-blue-600/15 top-[-5%] left-[-5%] animate-liquid-float"></div>
-    <div class="liquid-bg-blob w-[600px] h-[600px] bg-indigo-500/15 dark:bg-indigo-950/30 bottom-[-10%] right-[-5%] animate-liquid-float" style="animation-delay: -5s;"></div>
+    <div class="liquid-bg-blob w-[550px] h-[550px] bg-blue-500/25 dark:bg-blue-600/20 top-[-10%] left-[-10%] animate-liquid-float"></div>
+    <div class="liquid-bg-blob w-[650px] h-[650px] bg-indigo-500/20 dark:bg-indigo-900/25 bottom-[-10%] right-[-10%] animate-liquid-float" style="animation-delay: -6s;"></div>
   </div>
 
-  <!-- 簡潔導航列 -->
-  <header class="sticky top-0 z-40 backdrop-blur-xl bg-white/70 dark:bg-slate-950/70 border-b border-slate-200/60 dark:border-slate-800/60 transition-colors">
+  <!-- 導航列 -->
+  <header class="sticky top-0 z-40 backdrop-blur-2xl bg-white/60 dark:bg-slate-950/60 border-b border-slate-200/50 dark:border-slate-800/50 transition-colors">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-      
-      <!-- Logo 區 -->
       <button onclick="resetToHome()" class="flex items-center gap-2 group text-left focus:outline-none">
         <img src="https://i.ibb.co/sJRpyNmz/Background-Eraser-20260727-192939994.png" alt="Faekson Logo" class="h-7 w-auto object-contain dark:invert-0 invert transition group-hover:scale-105" />
       </button>
 
-      <!-- 右側精簡功能按鈕 -->
       <div class="flex items-center gap-2">
-        <button onclick="toggleBookmarksView()" id="bookmark-toggle-btn" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition border border-slate-200/50 dark:border-slate-700/50">
+        <button onclick="toggleCalculatorModal()" class="p-2.5 rounded-xl liquid-card hover:bg-white/80 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-200 transition" title="小算盤">
+          <i class="fa-solid fa-calculator text-blue-500 text-sm"></i>
+        </button>
+        <button onclick="toggleBookmarksView()" id="bookmark-toggle-btn" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold liquid-card hover:bg-white/80 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-200 transition">
           <i class="fa-solid fa-bookmark text-amber-500"></i>
           <span class="hidden sm:inline">收藏</span>
           <span id="bookmark-count-badge" class="bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">0</span>
         </button>
-
-        <button onclick="toggleHistoryModal()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition border border-slate-200/50 dark:border-slate-700/50" title="歷史紀錄">
+        <button onclick="toggleHistoryModal()" class="p-2.5 rounded-xl liquid-card hover:bg-white/80 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-200 transition" title="歷史紀錄">
           <i class="fa-solid fa-clock-rotate-left text-sm"></i>
         </button>
-
-        <button onclick="toggleNotesModal()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition border border-slate-200/50 dark:border-slate-700/50 relative" title="便條紙">
+        <button onclick="toggleNotesModal()" class="p-2.5 rounded-xl liquid-card hover:bg-white/80 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-200 transition relative" title="便條紙">
           <i class="fa-solid fa-note-sticky text-yellow-500 text-sm"></i>
           <span id="notes-indicator" class="absolute top-2 right-2 w-2 h-2 bg-yellow-500 rounded-full hidden"></span>
         </button>
-
-        <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition border border-slate-200/50 dark:border-slate-700/50" title="切換外觀">
+        <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl liquid-card hover:bg-white/80 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-200 transition" title="切換外觀">
           <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- 主內容區 -->
+  <!-- 主內容區：保留舊版基本排版架構 -->
   <main class="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-10 flex flex-col gap-6 justify-center transition-all duration-300" id="main-layout">
 
-    <!-- 首頁 Hero 區 -->
     <div id="home-hero-zone" class="flex flex-col items-center justify-center py-6 text-center transition-all duration-300">
       <div class="cursor-pointer mb-3 transform hover:scale-105 transition duration-300" onclick="resetToHome()">
         <img src="https://i.ibb.co/sJRpyNmz/Background-Eraser-20260727-192939994.png" alt="Faekson Logo" class="w-56 sm:w-68 h-auto object-contain dark:invert-0 invert drop-shadow-md" />
       </div>
-      <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">雙引擎極速搜尋，乾淨無廣告</p>
+      <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">雙引擎極速搜尋，頂級液態質感</p>
     </div>
 
     <!-- 搜尋列與即時建議 -->
     <div class="flex flex-col gap-4 relative">
       <form onsubmit="submitSearch(event)" class="relative group">
-        <div class="w-full clean-card rounded-2xl p-2 flex items-center shadow-lg transition-all focus-within:ring-2 focus-within:ring-blue-500/40">
+        <div class="w-full liquid-card rounded-2xl p-2 flex items-center shadow-lg transition-all focus-within:ring-2 focus-within:ring-blue-500/40">
           <div class="pl-3.5 pr-2.5 text-slate-400 dark:text-blue-400">
             <i class="fa-solid fa-magnifying-glass text-base"></i>
           </div>
@@ -150,7 +147,7 @@
             id="search-input"
             oninput="handleTyping()"
             onfocus="handleTyping()"
-            placeholder="輸入關鍵字搜尋..." 
+            placeholder="輸入關鍵字或直接計算數學式 (例: 50*3)..." 
             autocomplete="off"
             class="w-full bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder-slate-400 text-sm sm:text-base px-2 py-1.5"
           />
@@ -162,45 +159,55 @@
           </button>
         </div>
 
-        <!-- 建議下拉選單 -->
-        <div id="suggestions-box" class="hidden absolute left-0 right-0 top-full mt-2 clean-card rounded-2xl shadow-xl overflow-hidden z-50 py-1.5 animate-fade-in-up">
+        <div id="suggestions-box" class="hidden absolute left-0 right-0 top-full mt-2 liquid-card rounded-2xl shadow-xl overflow-hidden z-50 py-1.5 animate-fade-in-up">
           <div id="suggestions-list" class="flex flex-col"></div>
         </div>
       </form>
 
       <!-- 分類標籤列 -->
       <div class="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar text-xs justify-start sm:justify-center" id="category-bar">
-        <button onclick="filterCategory('即時新聞', event)" class="cat-btn px-3.5 py-1.5 rounded-xl font-medium bg-slate-200/60 dark:bg-slate-800/80 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap transition">即時新聞</button>
-        <button onclick="filterCategory('FR', event)" class="cat-btn px-3.5 py-1.5 rounded-xl font-medium bg-slate-200/60 dark:bg-slate-800/80 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap transition">FR 專區</button>
-        <button onclick="filterCategory('ai', event)" class="cat-btn px-3.5 py-1.5 rounded-xl font-medium bg-slate-200/60 dark:bg-slate-800/80 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap transition">AI 工具</button>
-        <button onclick="filterCategory('程式', event)" class="cat-btn px-3.5 py-1.5 rounded-xl font-medium bg-slate-200/60 dark:bg-slate-800/80 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap transition">開發設計</button>
-        <button onclick="filterCategory('遊戲', event)" class="cat-btn px-3.5 py-1.5 rounded-xl font-medium bg-slate-200/60 dark:bg-slate-800/80 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap transition">娛樂遊戲</button>
-        <button onclick="filterCategory('免費', event)" class="cat-btn px-3.5 py-1.5 rounded-xl font-medium bg-slate-200/60 dark:bg-slate-800/80 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap transition">免費資源</button>
+        <button onclick="filterCategory('即時新聞', event)" class="cat-btn px-3.5 py-1.5 rounded-xl font-medium liquid-card hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap transition">即時新聞</button>
+        <button onclick="filterCategory('FR', event)" class="cat-btn px-3.5 py-1.5 rounded-xl font-medium liquid-card hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap transition">FR 專區</button>
+        <button onclick="filterCategory('ai', event)" class="cat-btn px-3.5 py-1.5 rounded-xl font-medium liquid-card hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap transition">AI 工具</button>
+        <button onclick="filterCategory('程式', event)" class="cat-btn px-3.5 py-1.5 rounded-xl font-medium liquid-card hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap transition">開發設計</button>
+        <button onclick="filterCategory('遊戲', event)" class="cat-btn px-3.5 py-1.5 rounded-xl font-medium liquid-card hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap transition">娛樂遊戲</button>
+        <button onclick="filterCategory('免費', event)" class="cat-btn px-3.5 py-1.5 rounded-xl font-medium liquid-card hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap transition">免費資源</button>
       </div>
     </div>
 
     <!-- 搜尋結果展示區 -->
     <div id="results-wrapper" class="hidden flex-col gap-6 mt-2 animate-fade-in-up">
       
-      <!-- 結果切換 Tab -->
+      <!-- 即時計算機小卡 (當輸入數學式時顯示) -->
+      <div id="calc-result-box" class="hidden liquid-card rounded-2xl p-4 flex items-center justify-between border border-blue-500/30 bg-blue-500/5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-500">
+            <i class="fa-solid fa-calculator text-lg"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-400 font-medium">計算結果</div>
+            <div id="calc-expr-text" class="text-sm text-slate-700 dark:text-slate-300"></div>
+          </div>
+        </div>
+        <div id="calc-val-text" class="text-lg font-bold text-blue-600 dark:text-blue-400 font-mono"></div>
+      </div>
+
       <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <div class="flex items-center gap-2">
           <button onclick="switchResultTab('local')" id="tab-local-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white transition shadow-sm">
             本地資料庫 (<span id="local-count">0</span>)
           </button>
-          <button onclick="switchResultTab('cloud')" id="tab-cloud-btn" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition">
+          <button onclick="switchResultTab('cloud')" id="tab-cloud-btn" class="px-4 py-2 rounded-xl text-xs font-semibold liquid-card text-slate-600 dark:text-slate-300 transition">
             網路引擎 (<span id="cloud-count">0</span>)
           </button>
         </div>
         <span id="search-time-stats" class="text-[11px] text-slate-400"></span>
       </div>
 
-      <!-- 本地結果容器 -->
       <div id="local-pane" class="flex flex-col gap-3.5">
         <div id="local-results-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5"></div>
       </div>
 
-      <!-- 網路結果容器 -->
       <div id="cloud-pane" class="hidden flex-col gap-3.5">
         <div id="cloud-results-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5"></div>
       </div>
@@ -208,61 +215,78 @@
 
   </main>
 
+  <!-- 小算盤 Modal -->
+  <div id="calculator-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="liquid-card rounded-3xl max-w-xs w-full p-5 shadow-2xl animate-fade-in-up flex flex-col gap-4">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+        <h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-calculator text-blue-500"></i> 小算盤</h3>
+        <button onclick="toggleCalculatorModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="calc-screen" class="w-full bg-slate-100 dark:bg-slate-900/80 rounded-2xl p-4 text-right font-mono text-2xl font-bold text-slate-800 dark:text-white truncate border border-slate-200 dark:border-slate-800">0</div>
+      <div class="grid grid-cols-4 gap-2 text-sm font-semibold">
+        <button onclick="calcInput('C')" class="p-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20 transition">C</button>
+        <button onclick="calcInput('(')" class="p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">(</button>
+        <button onclick="calcInput(')')" class="p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">)</button>
+        <button onclick="calcInput('/')" class="p-3 rounded-xl bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition">÷</button>
+        <button onclick="calcInput('7')" class="p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">7</button>
+        <button onclick="calcInput('8')" class="p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">8</button>
+        <button onclick="calcInput('9')" class="p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">9</button>
+        <button onclick="calcInput('*')" class="p-3 rounded-xl bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition">×</button>
+        <button onclick="calcInput('4')" class="p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">4</button>
+        <button onclick="calcInput('5')" class="p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">5</button>
+        <button onclick="calcInput('6')" class="p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">6</button>
+        <button onclick="calcInput('-')" class="p-3 rounded-xl bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition">-</button>
+        <button onclick="calcInput('1')" class="p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">1</button>
+        <button onclick="calcInput('2')" class="p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">2</button>
+        <button onclick="calcInput('3')" class="p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">3</button>
+        <button onclick="calcInput('+')" class="p-3 rounded-xl bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition">+</button>
+        <button onclick="calcInput('0')" class="col-span-2 p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">0</button>
+        <button onclick="calcInput('.')" class="p-3 rounded-xl liquid-card hover:bg-slate-200 dark:hover:bg-slate-800 transition">.</button>
+        <button onclick="calcEqual()" class="p-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition">=</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 歷史紀錄 Modal -->
   <div id="history-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="clean-card rounded-2xl max-w-sm w-full p-5 shadow-2xl animate-fade-in-up flex flex-col max-h-[75vh]">
+    <div class="liquid-card rounded-2xl max-w-sm w-full p-5 shadow-2xl animate-fade-in-up flex flex-col max-h-[75vh]">
       <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-        <h3 class="font-bold text-sm flex items-center gap-2">
-          <i class="fa-solid fa-clock-rotate-left text-blue-500"></i> 搜尋歷史紀錄
-        </h3>
-        <button onclick="toggleHistoryModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition">
-          <i class="fa-solid fa-xmark text-base"></i>
-        </button>
+        <h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-blue-500"></i> 搜尋歷史紀錄</h3>
+        <button onclick="toggleHistoryModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div id="history-list" class="flex-1 overflow-y-auto py-3 custom-scrollbar flex flex-col gap-2"></div>
       <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center">
         <button onclick="clearHistory()" class="text-xs text-red-500 hover:underline font-medium">清除紀錄</button>
-        <button onclick="toggleHistoryModal()" class="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 text-xs font-semibold rounded-xl text-slate-700 dark:text-slate-300">關閉</button>
+        <button onclick="toggleHistoryModal()" class="px-3 py-1.5 liquid-card text-xs font-semibold rounded-xl text-slate-700 dark:text-slate-300">關閉</button>
       </div>
     </div>
   </div>
 
   <!-- 便條紙 Modal -->
   <div id="notes-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="clean-card rounded-2xl max-w-md w-full p-5 shadow-2xl animate-fade-in-up flex flex-col h-[400px]">
+    <div class="liquid-card rounded-2xl max-w-md w-full p-5 shadow-2xl animate-fade-in-up flex flex-col h-[400px]">
       <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-        <h3 class="font-bold text-sm flex items-center gap-2">
-          <i class="fa-solid fa-note-sticky text-yellow-500"></i> 快速筆記
-        </h3>
-        <button onclick="toggleNotesModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition">
-          <i class="fa-solid fa-xmark text-base"></i>
-        </button>
+        <h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-note-sticky text-yellow-500"></i> 快速筆記</h3>
+        <button onclick="toggleNotesModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <textarea 
-        id="quick-notes-input" 
-        oninput="saveQuickNotes()"
-        placeholder="在此隨手記錄想法，自動儲存..." 
-        class="flex-1 w-full bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 mt-3 resize-none outline-none text-slate-800 dark:text-slate-200 text-xs sm:text-sm focus:ring-1 focus:ring-yellow-500 custom-scrollbar"
-      ></textarea>
+      <textarea id="quick-notes-input" oninput="saveQuickNotes()" placeholder="在此隨手記錄想法..." class="flex-1 w-full bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 mt-3 resize-none outline-none text-slate-800 dark:text-slate-200 text-xs sm:text-sm focus:ring-1 focus:ring-yellow-500 custom-scrollbar"></textarea>
       <div class="pt-3 flex justify-between items-center text-xs text-slate-400">
-        <span id="notes-status">即時儲存中</span>
+        <span>即時儲存中</span>
         <button onclick="toggleNotesModal()" class="px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-slate-950 font-bold rounded-xl transition">完成</button>
       </div>
     </div>
   </div>
 
-  <!-- 頁尾 -->
-  <footer class="mt-auto border-t border-slate-200/60 dark:border-slate-800/60 py-5 text-center text-xs text-slate-400">
+  
+  <footer class="mt-auto border-t border-slate-200/50 dark:border-slate-800/50 py-5 text-center text-xs text-slate-400">
     <p>© 2027 Faekson Search</p>
   </footer>
 
-  <!-- Toast 通知 -->
-  <div id="toast" class="fixed bottom-5 right-5 transform translate-y-16 opacity-0 clean-card text-slate-800 dark:text-white px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2.5 text-xs font-semibold transition-all duration-300 pointer-events-none z-50">
+  <div id="toast" class="fixed bottom-5 right-5 transform translate-y-16 opacity-0 liquid-card text-slate-800 dark:text-white px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2.5 text-xs font-semibold transition-all duration-300 pointer-events-none z-50">
     <i class="fa-solid fa-circle-check text-emerald-500"></i>
     <span id="toast-msg">操作成功</span>
   </div>
 
-  <!-- 核心邏輯 -->
   <script>
     let allData = [];
     let bookmarks = JSON.parse(localStorage.getItem('faekson_bookmarks')) || [];
@@ -270,33 +294,38 @@
     let currentCategory = 'all';
     let isShowingBookmarks = false;
     let activeTab = 'local';
-    let cachedLocalResults = [];
-    let cachedCloudResults = [];
+    let calcInputString = '';
 
     async function init() {
       updateBookmarkBadge();
       initQuickNotes();
       try {
-        const fetchUrl = 'https://raw.githubusercontent.com/FR2027/Faekson_2/refs/heads/main/data.json?v=' + new Date().getTime();
-        const res = await fetch(fetchUrl);
-        if (!res.ok) throw new Error('HTTP error');
+        const res = await fetch('https://raw.githubusercontent.com/FR2027/Faekson_2/refs/heads/main/data.json?v=' + new Date().getTime());
+        if (!res.ok) throw new Error();
         allData = await res.json();
       } catch (err) {
-        console.warn('載入遠端數據失敗，改用預設空陣列');
         allData = [];
       }
     }
 
+    function checkMathCalculation(query) {
+      try {
+        const cleanExpr = query.replace(/[^0-9+\-*/().]/g, '');
+        if (/^[0-9+\-*/().\s]+$/.test(cleanExpr) && /[+\-*/]/.test(cleanExpr)) {
+          const result = Function('"use strict";return (' + cleanExpr + ')')();
+          if (result !== undefined && !isNaN(result)) {
+            return { expr: cleanExpr, val: result };
+          }
+        }
+      } catch (e) {}
+      return null;
+    }
+
     function renderSkeletonCards() {
       return `
-        <div class="clean-card rounded-2xl p-4 flex flex-col gap-3 animate-skeleton">
+        <div class="liquid-card rounded-2xl p-4 flex flex-col gap-3 animate-skeleton">
           <div class="w-full h-32 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
           <div class="w-3/4 h-4 bg-slate-200 dark:bg-slate-800 rounded"></div>
-          <div class="w-full h-8 bg-slate-200 dark:bg-slate-800 rounded"></div>
-        </div>
-        <div class="clean-card rounded-2xl p-4 flex flex-col gap-3 animate-skeleton">
-          <div class="w-full h-32 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
-          <div class="w-2/3 h-4 bg-slate-200 dark:bg-slate-800 rounded"></div>
           <div class="w-full h-8 bg-slate-200 dark:bg-slate-800 rounded"></div>
         </div>
       `;
@@ -309,46 +338,24 @@
       const uniqueId = item.id || (prefixId + '_' + index);
 
       return `
-        <div class="clean-card rounded-2xl p-4 flex flex-col justify-between">
+        <div class="liquid-card rounded-2xl p-4 flex flex-col justify-between">
           <div>
-            ${imageUrl ? `
-              <div class="w-full h-36 mb-3 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 relative group/img">
-                <img src="${imageUrl}" alt="${item.title || ''}" class="w-full h-full object-cover group-hover/img:scale-105 transition duration-300" onerror="this.style.display='none'" />
-              </div>
-            ` : ''}
-
+            ${imageUrl ? `<div class="w-full h-36 mb-3 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 relative group/img"><img src="${imageUrl}" alt="${item.title || ''}" class="w-full h-full object-cover group-hover/img:scale-105 transition duration-300" onerror="this.style.display='none'" /></div>` : ''}
             <div class="flex items-start justify-between gap-2 mb-2">
               <a href="${item.url || '#'}" target="_blank" class="font-bold text-sm text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition line-clamp-1 flex items-center gap-1.5 group/link">
                 <span>${item.title || '無標題'}</span>
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-0 group-hover/link:opacity-100 transition"></i>
               </a>
-              
               <div class="flex items-center gap-1 shrink-0">
-                <button onclick="copyUrl('${item.url || ''}')" title="複製連結" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800 transition">
-                  <i class="fa-regular fa-copy text-xs"></i>
-                </button>
-                <button onclick="toggleBookmark('${uniqueId}')" title="收藏" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800 transition">
-                  <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-star text-xs ${isBookmarked ? 'text-amber-400' : ''}"></i>
-                </button>
+                <button onclick="copyUrl('${item.url || ''}')" title="複製連結" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800 transition"><i class="fa-regular fa-copy text-xs"></i></button>
+                <button onclick="toggleBookmark('${uniqueId}')" title="收藏" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800 transition"><i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-star text-xs ${isBookmarked ? 'text-amber-400' : ''}"></i></button>
               </div>
             </div>
-
             <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mb-3">${safeSnippet}</p>
           </div>
-
           <div>
-            ${item.tags && item.tags.length > 0 ? `
-              <div class="flex flex-wrap gap-1 mb-3">
-                ${item.tags.map(tag => {
-                  const safeTag = String(tag).replace(/'/g, "\\'");
-                  return `<span onclick="clickTagSearch('${safeTag}')" class="cursor-pointer text-[10px] font-medium px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-300 hover:bg-blue-500/20 transition">#${tag}</span>`;
-                }).join('')}
-              </div>
-            ` : ''}
-
-            <a href="${item.url || '#'}" target="_blank" class="text-[10px] font-mono text-slate-400 dark:text-slate-500 truncate block hover:text-blue-500 transition">
-              <i class="fa-solid fa-globe mr-1 opacity-60"></i>${item.url || ''}
-            </a>
+            ${item.tags && item.tags.length > 0 ? `<div class="flex flex-wrap gap-1 mb-3">${item.tags.map(t => `<span onclick="clickTagSearch('${t}')" class="cursor-pointer text-[10px] font-medium px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-300 hover:bg-blue-500/20 transition">#${t}</span>`).join('')}</div>` : ''}
+            <a href="${item.url || '#'}" target="_blank" class="text-[10px] font-mono text-slate-400 dark:text-slate-500 truncate block hover:text-blue-500 transition"><i class="fa-solid fa-globe mr-1 opacity-60"></i>${item.url || ''}</a>
           </div>
         </div>
       `;
@@ -358,7 +365,7 @@
       const container = document.getElementById('local-results-container');
       document.getElementById('local-count').innerText = list.length;
       if (list.length === 0) {
-        container.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-slate-400 clean-card rounded-xl">無本地資料</div>`;
+        container.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-slate-400 liquid-card rounded-xl">無本地資料</div>`;
         return;
       }
       container.innerHTML = list.map((item, index) => renderCardHTML(item, index, 'local')).join('');
@@ -368,7 +375,7 @@
       const container = document.getElementById('cloud-results-container');
       document.getElementById('cloud-count').innerText = list.length;
       if (list.length === 0) {
-        container.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-slate-400 clean-card rounded-xl">無網路搜尋結果</div>`;
+        container.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-slate-400 liquid-card rounded-xl">無網路搜尋結果</div>`;
         return;
       }
       container.innerHTML = list.map((item, index) => renderCardHTML(item, index, 'cloud')).join('');
@@ -383,42 +390,18 @@
 
     function handleTyping() {
       const query = document.getElementById('search-input').value.trim().toLowerCase();
-      const clearBtn = document.getElementById('clear-btn');
+      document.getElementById('clear-btn').classList.toggle('hidden', query === '');
       const box = document.getElementById('suggestions-box');
-      const list = document.getElementById('suggestions-list');
+      if (!query) { box.classList.add('hidden'); return; }
 
-      clearBtn.classList.toggle('hidden', query === '');
+      const matched = allData.filter(i => (i.title && i.title.toLowerCase().includes(query)) || (i.tags || []).some(t => t.toLowerCase().includes(query))).slice(0, 4);
+      if (matched.length === 0) { box.classList.add('hidden'); return; }
 
-      if (!query) {
-        box.classList.add('hidden');
-        return;
-      }
-
-      const matchedTitles = allData
-        .filter(item => 
-          (item.title && String(item.title).toLowerCase().includes(query)) || 
-          (item.tags || []).some(t => String(t).toLowerCase().includes(query))
-        )
-        .slice(0, 4);
-
-      if (matchedTitles.length === 0) {
-        box.classList.add('hidden');
-        return;
-      }
-
-      list.innerHTML = matchedTitles.map(item => {
-        const safeTitle = (item.title || '').replace(/'/g, "\\'");
-        return `
-          <div onclick="selectSuggestion('${safeTitle}')" class="px-3.5 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer flex items-center justify-between transition text-xs text-slate-700 dark:text-slate-200">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-magnifying-glass text-[10px] text-blue-500"></i>
-              <span>${item.title || ''}</span>
-            </div>
-            <i class="fa-solid fa-arrow-up-left text-[10px] text-slate-400"></i>
-          </div>
-        `;
-      }).join('');
-
+      document.getElementById('suggestions-list').innerHTML = matched.map(i => `
+        <div onclick="selectSuggestion('${i.title}')" class="px-3.5 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer flex items-center justify-between transition text-xs text-slate-700 dark:text-slate-200">
+          <div class="flex items-center gap-2"><i class="fa-solid fa-magnifying-glass text-[10px] text-blue-500"></i><span>${i.title}</span></div>
+        </div>
+      `).join('');
       box.classList.remove('hidden');
     }
 
@@ -447,14 +430,21 @@
 
     async function executeSearch() {
       const query = document.getElementById('search-input').value.trim().toLowerCase();
-
-      if (!query && currentCategory === 'all' && !isShowingBookmarks) {
-        resetToHome();
-        return;
-      }
+      if (!query && currentCategory === 'all' && !isShowingBookmarks) { resetToHome(); return; }
 
       switchToSearchMode();
       if (isShowingBookmarks) isShowingBookmarks = false;
+
+      // 檢查數學計算
+      const mathCheck = checkMathCalculation(query);
+      const calcBox = document.getElementById('calc-result-box');
+      if (mathCheck) {
+        calcBox.classList.remove('hidden');
+        document.getElementById('calc-expr-text').innerText = mathCheck.expr + ' =';
+        document.getElementById('calc-val-text').innerText = mathCheck.val;
+      } else {
+        calcBox.classList.add('hidden');
+      }
 
       if (query && !searchHistory.includes(query)) {
         searchHistory.unshift(query);
@@ -464,101 +454,62 @@
 
       document.getElementById('local-results-container').innerHTML = renderSkeletonCards();
       document.getElementById('cloud-results-container').innerHTML = renderSkeletonCards();
-
       const startTime = performance.now();
 
-      // 1. 本地過濾
       let filteredLocal = allData;
       if (currentCategory !== 'all') {
-        filteredLocal = filteredLocal.filter(item => 
-          (item.tags || []).some(t => String(t).toLowerCase() === currentCategory.toLowerCase()) ||
-          (item.title && String(item.title).toLowerCase().includes(currentCategory.toLowerCase()))
-        );
+        filteredLocal = filteredLocal.filter(i => (i.tags || []).some(t => t.toLowerCase() === currentCategory.toLowerCase()) || (i.title && i.title.toLowerCase().includes(currentCategory.toLowerCase())));
       }
       if (query) {
-        filteredLocal = filteredLocal.filter(item => 
-          (item.title && String(item.title).toLowerCase().includes(query)) ||
-          (item.snippet && String(item.snippet).toLowerCase().includes(query)) ||
-          (item.description && String(item.description).toLowerCase().includes(query)) ||
-          (item.tags || []).some(t => String(t).toLowerCase().includes(query))
-        );
+        filteredLocal = filteredLocal.filter(i => (i.title && i.title.toLowerCase().includes(query)) || (i.snippet && i.snippet.toLowerCase().includes(query)) || (i.tags || []).some(t => t.toLowerCase().includes(query)));
       }
-      cachedLocalResults = filteredLocal;
-      renderLocalResults(cachedLocalResults);
+      renderLocalResults(filteredLocal);
 
-      // 2. 網路引擎查詢
       let cloudResults = [];
-      if (query) {
+      if (query && !mathCheck) {
         try {
-          const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://html.duckduckgo.com/html/?q=' + encodeURIComponent(query))}`;
-          const res = await fetch(proxyUrl);
+          const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://html.duckduckgo.com/html/?q=' + encodeURIComponent(query))}`);
           const data = await res.json();
           if (data && data.contents) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(data.contents, 'text/html');
+            const doc = new DOMParser().parseFromString(data.contents, 'text/html');
             doc.querySelectorAll('.result').forEach((el, idx) => {
-              const titleEl = el.querySelector('.result__title');
-              const snippetEl = el.querySelector('.result__snippet');
-              const linkEl = el.querySelector('.result__url');
-              if (titleEl && linkEl) {
-                cloudResults.push({
-                  id: 'cloud_' + idx,
-                  title: titleEl.textContent.trim(),
-                  snippet: snippetEl ? snippetEl.textContent.trim() : '無摘要',
-                  url: linkEl.href || '#',
-                  tags: ['網路']
-                });
-              }
+              const t = el.querySelector('.result__title');
+              const s = el.querySelector('.result__snippet');
+              const l = el.querySelector('.result__url');
+              if (t && l) cloudResults.push({ id: 'cloud_' + idx, title: t.textContent.trim(), snippet: s ? s.textContent.trim() : '', url: l.href || '#', tags: ['網路'] });
             });
           }
-        } catch (err) {
-          console.warn('網路搜尋失敗');
-        }
+        } catch (err) {}
       }
-      cachedCloudResults = cloudResults.slice(0, 8);
-      renderCloudResults(cachedCloudResults);
-
-      const endTime = performance.now();
-      document.getElementById('search-time-stats').innerText = `耗時 ${(endTime - startTime).toFixed(0)}ms`;
+      renderCloudResults(cloudResults.slice(0, 8));
+      document.getElementById('search-time-stats').innerText = `耗時 ${(performance.now() - startTime).toFixed(0)}ms`;
     }
 
     function switchResultTab(tab) {
       activeTab = tab;
       const localBtn = document.getElementById('tab-local-btn');
       const cloudBtn = document.getElementById('tab-cloud-btn');
-      const localPane = document.getElementById('local-pane');
-      const cloudPane = document.getElementById('cloud-pane');
-
       if (tab === 'local') {
         localBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white transition shadow-sm';
-        cloudBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition';
-        localPane.classList.remove('hidden');
-        cloudPane.classList.add('hidden');
+        cloudBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold liquid-card text-slate-600 dark:text-slate-300 transition';
+        document.getElementById('local-pane').classList.remove('hidden');
+        document.getElementById('cloud-pane').classList.add('hidden');
       } else {
         cloudBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white transition shadow-sm';
-        localBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition';
-        cloudPane.classList.remove('hidden');
-        localPane.classList.add('hidden');
+        localBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold liquid-card text-slate-600 dark:text-slate-300 transition';
+        document.getElementById('cloud-pane').classList.remove('hidden');
+        document.getElementById('local-pane').classList.add('hidden');
       }
     }
 
     function filterCategory(cat, e) {
-      if (currentCategory === cat) {
-        currentCategory = 'all';
-      } else {
-        currentCategory = cat;
-      }
-      
+      currentCategory = currentCategory === cat ? 'all' : cat;
       document.querySelectorAll('.cat-btn').forEach(btn => {
         btn.classList.remove('bg-blue-600', 'text-white');
-        btn.classList.add('bg-slate-200/60', 'dark:bg-slate-800/80', 'text-slate-700', 'dark:text-slate-300');
       });
-      
       if (currentCategory !== 'all' && e && e.currentTarget) {
-        e.currentTarget.classList.remove('bg-slate-200/60', 'dark:bg-slate-800/80', 'text-slate-700', 'dark:text-slate-300');
         e.currentTarget.classList.add('bg-blue-600', 'text-white');
       }
-
       executeSearch();
     }
 
@@ -568,12 +519,7 @@
       document.getElementById('suggestions-box').classList.add('hidden');
       currentCategory = 'all';
       isShowingBookmarks = false;
-
-      document.querySelectorAll('.cat-btn').forEach(btn => {
-        btn.classList.remove('bg-blue-600', 'text-white');
-        btn.classList.add('bg-slate-200/60', 'dark:bg-slate-800/80', 'text-slate-700', 'dark:text-slate-300');
-      });
-
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('bg-blue-600', 'text-white'));
       document.getElementById('home-hero-zone').classList.remove('hidden');
       document.getElementById('main-layout').classList.add('justify-center');
       document.getElementById('results-wrapper').classList.add('hidden');
@@ -583,35 +529,22 @@
     function clearSearch() {
       document.getElementById('search-input').value = '';
       document.getElementById('clear-btn').classList.add('hidden');
-      document.getElementById('suggestions-box').classList.add('hidden');
       executeSearch();
     }
 
     function toggleBookmark(id) {
-      const index = bookmarks.findIndex(b => b.id === id);
-      const targetItem = allData.find(item => item.id === id);
-
-      if (index > -1) {
-        bookmarks.splice(index, 1);
-        showToast('已取消收藏');
-      } else if (targetItem) {
-        bookmarks.push(targetItem);
-        showToast('已加入收藏');
-      }
-
+      const idx = bookmarks.findIndex(b => b.id === id);
+      const item = allData.find(i => i.id === id);
+      if (idx > -1) { bookmarks.splice(idx, 1); showToast('已取消收藏'); }
+      else if (item) { bookmarks.push(item); showToast('已加入收藏'); }
       localStorage.setItem('faekson_bookmarks', JSON.stringify(bookmarks));
       updateBookmarkBadge();
-
-      if (isShowingBookmarks) {
-        renderLocalResults(bookmarks);
-      } else {
-        executeSearch();
-      }
+      if (isShowingBookmarks) renderLocalResults(bookmarks);
+      else executeSearch();
     }
 
     function updateBookmarkBadge() {
-      const badge = document.getElementById('bookmark-count-badge');
-      if (badge) badge.innerText = bookmarks.length;
+      document.getElementById('bookmark-count-badge').innerText = bookmarks.length;
     }
 
     function toggleBookmarksView() {
@@ -627,95 +560,86 @@
       }
     }
 
+    function toggleCalculatorModal() {
+      document.getElementById('calculator-modal').classList.toggle('hidden');
+    }
+
+    function calcInput(val) {
+      const screen = document.getElementById('calc-screen');
+      if (val === 'C') { calcInputString = ''; screen.innerText = '0'; return; }
+      calcInputString += val;
+      screen.innerText = calcInputString;
+    }
+
+    function calcEqual() {
+      const screen = document.getElementById('calc-screen');
+      try {
+        const res = Function('"use strict";return (' + calcInputString + ')')();
+        screen.innerText = res;
+        calcInputString = String(res);
+      } catch (e) {
+        screen.innerText = '錯誤';
+        calcInputString = '';
+      }
+    }
+
     function toggleHistoryModal() {
       const modal = document.getElementById('history-modal');
       modal.classList.toggle('hidden');
       if (!modal.classList.contains('hidden')) {
-        renderHistoryList();
+        const list = document.getElementById('history-list');
+        list.innerHTML = searchHistory.length === 0 ? `<p class="text-center text-xs text-slate-400 py-4">無歷史紀錄</p>` :
+          searchHistory.map(item => `<div class="flex items-center justify-between px-3 py-2 rounded-xl liquid-card"><span onclick="selectHistory('${item}')" class="text-xs text-slate-700 dark:text-slate-200 cursor-pointer flex-1 truncate">${item}</span><button onclick="removeHistory('${item}')" class="text-slate-400 hover:text-red-500 px-2 text-xs"><i class="fa-solid fa-xmark"></i></button></div>`).join('');
       }
     }
 
-    function renderHistoryList() {
-      const listContainer = document.getElementById('history-list');
-      if (searchHistory.length === 0) {
-        listContainer.innerHTML = `<p class="text-center text-xs text-slate-400 py-4">無歷史紀錄</p>`;
-        return;
-      }
-      listContainer.innerHTML = searchHistory.map(item => `
-        <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-900/60 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition">
-          <span onclick="selectHistoryItem('${item}')" class="text-xs text-slate-700 dark:text-slate-200 cursor-pointer flex-1 truncate"><i class="fa-solid fa-clock mr-2 text-slate-400"></i>${item}</span>
-          <button onclick="removeHistoryItem('${item}')" class="text-slate-400 hover:text-red-500 px-2 text-xs"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-      `).join('');
-    }
-
-    function selectHistoryItem(term) {
+    function selectHistory(term) {
       document.getElementById('search-input').value = term;
       toggleHistoryModal();
       executeSearch();
     }
 
-    function removeHistoryItem(term) {
+    function removeHistory(term) {
       searchHistory = searchHistory.filter(i => i !== term);
       localStorage.setItem('faekson_history', JSON.stringify(searchHistory));
-      renderHistoryList();
+      toggleHistoryModal();
+      toggleHistoryModal();
     }
 
     function clearHistory() {
       searchHistory = [];
       localStorage.removeItem('faekson_history');
-      renderHistoryList();
+      toggleHistoryModal();
+      toggleHistoryModal();
       showToast('已清除歷史');
     }
 
-    function toggleNotesModal() {
-      document.getElementById('notes-modal').classList.toggle('hidden');
-    }
-
+    function toggleNotesModal() { document.getElementById('notes-modal').classList.toggle('hidden'); }
     function initQuickNotes() {
-      const savedNotes = localStorage.getItem('faekson_quick_notes') || '';
-      const textarea = document.getElementById('quick-notes-input');
-      if (textarea) textarea.value = savedNotes;
-      if (savedNotes.trim() !== '') {
-        document.getElementById('notes-indicator').classList.remove('hidden');
-      }
+      const n = localStorage.getItem('faekson_quick_notes') || '';
+      document.getElementById('quick-notes-input').value = n;
+      if (n.trim()) document.getElementById('notes-indicator').classList.remove('hidden');
     }
-
     function saveQuickNotes() {
-      const textarea = document.getElementById('quick-notes-input');
-      const val = textarea ? textarea.value : '';
-      localStorage.setItem('faekson_quick_notes', val);
-      const indicator = document.getElementById('notes-indicator');
-      if (val.trim() !== '') {
-        indicator.classList.remove('hidden');
-      } else {
-        indicator.classList.add('hidden');
-      }
+      const v = document.getElementById('quick-notes-input').value;
+      localStorage.setItem('faekson_quick_notes', v);
+      document.getElementById('notes-indicator').classList.toggle('hidden', !v.trim());
     }
 
-    function copyUrl(url) {
-      if (!url) return;
-      navigator.clipboard.writeText(url).then(() => {
-        showToast('已複製連結');
-      });
+    function copyUrl(u) {
+      if (u) navigator.clipboard.writeText(u).then(() => showToast('已複製連結'));
     }
 
     function showToast(msg) {
-      const toast = document.getElementById('toast');
-      const toastMsg = document.getElementById('toast-msg');
-      if (toast && toastMsg) {
-        toastMsg.innerText = msg;
-        toast.classList.remove('translate-y-16', 'opacity-0');
-        setTimeout(() => {
-          toast.classList.add('translate-y-16', 'opacity-0');
-        }, 1800);
-      }
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = msg;
+      t.classList.remove('translate-y-16', 'opacity-0');
+      setTimeout(() => t.classList.add('translate-y-16', 'opacity-0'), 1800);
     }
 
     function toggleDarkMode() {
       const html = document.documentElement;
       const icon = document.getElementById('theme-icon');
-      
       if (html.classList.contains('dark')) {
         html.classList.remove('dark');
         icon.className = 'fa-solid fa-sun text-sm text-amber-500';
@@ -727,9 +651,7 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      init();
-    });
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
