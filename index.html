@@ -12,15 +12,15 @@
       theme: {
         extend: {
           animation: {
-            'liquid-float': 'liquidFloat 12s ease-in-out infinite',
+            'liquid-float': 'liquidFloat 14s ease-in-out infinite',
             'fade-in-up': 'fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
             'skeleton': 'skeletonPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           },
           keyframes: {
             liquidFloat: {
               '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
-              '33%': { transform: 'translate(40px, -50px) scale(1.15)' },
-              '66%': { transform: 'translate(-30px, 30px) scale(0.9)' },
+              '33%': { transform: 'translate(50px, -60px) scale(1.2)' },
+              '66%': { transform: 'translate(-40px, 40px) scale(0.85)' },
             },
             fadeInUp: {
               '0%': { opacity: '0', transform: 'translateY(16px)' },
@@ -38,43 +38,45 @@
   <style>
     .liquid-bg-blob {
       position: absolute;
-      filter: blur(100px);
+      filter: blur(120px);
       z-index: -1;
-      opacity: 0.6;
+      opacity: 0.7;
       pointer-events: none;
       border-radius: 50%;
     }
 
     html.dark body {
-      background: #060913;
-      color: #f1f5f9;
+      background: #030712;
+      color: #f8fafc;
       background-attachment: fixed;
     }
     html:not(.dark) body {
-      background: #f1f5f9;
+      background: #f8fafc;
       color: #0f172a;
       background-attachment: fixed;
     }
 
-    /* 極致液態玻璃質感 (Liquid Glassmorphism) */
+    /* iOS 26 極致高透光液態玻璃質感 (Liquid Glassmorphism) */
     .liquid-card {
-      background: rgba(255, 255, 255, 0.65);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(35px) saturate(200%);
+      -webkit-backdrop-filter: blur(35px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05), inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
     html.dark .liquid-card {
-      background: rgba(13, 19, 33, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+      background: rgba(15, 23, 42, 0.58);
+      backdrop-filter: blur(35px) saturate(200%);
+      -webkit-backdrop-filter: blur(35px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .liquid-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
-      border-color: rgba(59, 130, 246, 0.5);
+      box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.25), inset 0 1px 2px 0 rgba(255, 255, 255, 0.95);
+      border-color: rgba(59, 130, 246, 0.4);
     }
 
     .custom-scrollbar::-webkit-scrollbar {
@@ -91,12 +93,12 @@
 
   <!-- 背景流動光暈 -->
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
-    <div class="liquid-bg-blob w-[550px] h-[550px] bg-blue-500/25 dark:bg-blue-600/20 top-[-10%] left-[-10%] animate-liquid-float"></div>
-    <div class="liquid-bg-blob w-[650px] h-[650px] bg-indigo-500/20 dark:bg-indigo-900/25 bottom-[-10%] right-[-10%] animate-liquid-float" style="animation-delay: -6s;"></div>
+    <div class="liquid-bg-blob w-[600px] h-[600px] bg-sky-400/30 dark:bg-blue-600/25 top-[-10%] left-[-10%] animate-liquid-float"></div>
+    <div class="liquid-bg-blob w-[700px] h-[700px] bg-indigo-400/25 dark:bg-purple-900/30 bottom-[-10%] right-[-10%] animate-liquid-float" style="animation-delay: -7s;"></div>
   </div>
 
   <!-- 導航列 -->
-  <header class="sticky top-0 z-40 backdrop-blur-2xl bg-white/60 dark:bg-slate-950/60 border-b border-slate-200/50 dark:border-slate-800/50 transition-colors">
+  <header class="sticky top-0 z-40 backdrop-blur-3xl bg-white/50 dark:bg-slate-950/50 border-b border-slate-200/40 dark:border-slate-800/40 transition-colors">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
       <button onclick="resetToHome()" class="flex items-center gap-2 group text-left focus:outline-none">
         <img src="https://i.ibb.co/sJRpyNmz/Background-Eraser-20260727-192939994.png" alt="Faekson Logo" class="h-7 w-auto object-contain dark:invert-0 invert transition group-hover:scale-105" />
@@ -132,7 +134,7 @@
       <div class="cursor-pointer mb-3 transform hover:scale-105 transition duration-300" onclick="resetToHome()">
         <img src="https://i.ibb.co/sJRpyNmz/Background-Eraser-20260727-192939994.png" alt="Faekson Logo" class="w-56 sm:w-68 h-auto object-contain dark:invert-0 invert drop-shadow-md" />
       </div>
-      <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">雙引擎極速搜尋，頂級液態質感</p>
+      <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">雙引擎極速搜尋，頂級 iOS 26 液態玻璃質感</p>
     </div>
 
     <!-- 搜尋列與即時建議 -->
@@ -216,7 +218,7 @@
   </main>
 
   <!-- 小算盤 Modal -->
-  <div id="calculator-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+  <div id="calculator-modal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="liquid-card rounded-3xl max-w-xs w-full p-5 shadow-2xl animate-fade-in-up flex flex-col gap-4">
       <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
         <h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-calculator text-blue-500"></i> 小算盤</h3>
@@ -248,7 +250,7 @@
   </div>
 
   <!-- 歷史紀錄 Modal -->
-  <div id="history-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+  <div id="history-modal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="liquid-card rounded-2xl max-w-sm w-full p-5 shadow-2xl animate-fade-in-up flex flex-col max-h-[75vh]">
       <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
         <h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-blue-500"></i> 搜尋歷史紀錄</h3>
@@ -263,7 +265,7 @@
   </div>
 
   <!-- 便條紙 Modal -->
-  <div id="notes-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+  <div id="notes-modal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="liquid-card rounded-2xl max-w-md w-full p-5 shadow-2xl animate-fade-in-up flex flex-col h-[400px]">
       <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
         <h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-note-sticky text-yellow-500"></i> 快速筆記</h3>
@@ -277,8 +279,7 @@
     </div>
   </div>
 
-  
-  <footer class="mt-auto border-t border-slate-200/50 dark:border-slate-800/50 py-5 text-center text-xs text-slate-400">
+  <footer class="mt-auto border-t border-slate-200/40 dark:border-slate-800/40 py-5 text-center text-xs text-slate-400">
     <p>© 2027 Faekson Search</p>
   </footer>
 
@@ -332,10 +333,10 @@
     }
 
     function renderCardHTML(item, index, prefixId) {
-      const isBookmarked = bookmarks.some(b => b.id === item.id);
+      const uniqueId = item.id || (prefixId + '_' + index);
+      const isBookmarked = bookmarks.some(b => (b.id && b.id === item.id) || (b.url && b.url === item.url));
       const imageUrl = item.image || item.img || item.cover;
       const safeSnippet = item.snippet || item.description || '';
-      const uniqueId = item.id || (prefixId + '_' + index);
 
       return `
         <div class="liquid-card rounded-2xl p-4 flex flex-col justify-between">
@@ -347,8 +348,8 @@
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-0 group-hover/link:opacity-100 transition"></i>
               </a>
               <div class="flex items-center gap-1 shrink-0">
-                <button onclick="copyUrl('${item.url || ''}')" title="複製連結" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800 transition"><i class="fa-regular fa-copy text-xs"></i></button>
-                <button onclick="toggleBookmark('${uniqueId}')" title="收藏" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800 transition"><i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-star text-xs ${isBookmarked ? 'text-amber-400' : ''}"></i></button>
+                <button type="button" onclick="copyUrl('${item.url || ''}')" title="複製連結" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800 transition"><i class="fa-regular fa-copy text-xs"></i></button>
+                <button type="button" onclick="toggleBookmark('${encodeURIComponent(uniqueId)}')" title="收藏" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800 transition"><i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-star text-xs ${isBookmarked ? 'text-amber-400' : ''}"></i></button>
               </div>
             </div>
             <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mb-3">${safeSnippet}</p>
@@ -435,7 +436,6 @@
       switchToSearchMode();
       if (isShowingBookmarks) isShowingBookmarks = false;
 
-      // 檢查數學計算
       const mathCheck = checkMathCalculation(query);
       const calcBox = document.getElementById('calc-result-box');
       if (mathCheck) {
@@ -532,15 +532,45 @@
       executeSearch();
     }
 
-    function toggleBookmark(id) {
-      const idx = bookmarks.findIndex(b => b.id === id);
-      const item = allData.find(i => i.id === id);
-      if (idx > -1) { bookmarks.splice(idx, 1); showToast('已取消收藏'); }
-      else if (item) { bookmarks.push(item); showToast('已加入收藏'); }
+    function toggleBookmark(encodedId) {
+      const id = decodeURIComponent(encodedId);
+      // 先從本地資料庫尋找，若找不到則從目前的雲端或收藏清單找
+      let item = allData.find(i => (i.id && i.id === id) || (('local_' + allData.indexOf(i)) === id));
+      if (!item) {
+        // 如果在 allData 找不到，試著從雲端結果尋找
+        const cloudCards = Array.from(document.querySelectorAll('#cloud-results-container .liquid-card'));
+        item = bookmarks.find(b => b.id === id || b.url === id);
+      }
+      
+      // 如果真的沒有物件實體，嘗試建立一個暫時的物件依據 id/url
+      if (!item) {
+        item = { id: id, title: id, url: id, snippet: '' };
+      }
+
+      const idx = bookmarks.findIndex(b => (b.id && b.id === item.id) || (b.url && b.url === item.url));
+      if (idx > -1) { 
+        bookmarks.splice(idx, 1); 
+        showToast('已取消收藏'); 
+      } else { 
+        bookmarks.push(item); 
+        showToast('已加入收藏'); 
+      }
       localStorage.setItem('faekson_bookmarks', JSON.stringify(bookmarks));
       updateBookmarkBadge();
-      if (isShowingBookmarks) renderLocalResults(bookmarks);
-      else executeSearch();
+
+      if (isShowingBookmarks) {
+        renderLocalResults(bookmarks);
+      } else {
+        // 重新整理目前畫面以同步星星狀態
+        const query = document.getElementById('search-input').value.trim();
+        if (query) {
+          executeSearch();
+        } else if (currentCategory !== 'all') {
+          filterCategory(currentCategory);
+        } else {
+          renderLocalResults(allData);
+        }
+      }
     }
 
     function updateBookmarkBadge() {
